@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f0e13">
+<meta name="description" content="재밌게 본 작품과 지금 보고 싶은 장르만 고르면, 내 구독 OTT에서 바로 볼 작품을 딱 3개 골라드려요.">
+<meta property="og:title" content="오티티픽 — 딱 3개만 골라주는 OTT 추천">
+<meta property="og:description" content="재밌게 본 작품 + 지금 기분 = 오늘 볼 작품 딱 3개">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="오티티픽">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>오티티픽 — 딱 3개만 골라주는 OTT 추천</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Black+Han+Sans&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f0e13; --panel:#1a1820; --panel2:#23202b; --line:#2f2b38;
+    --text:#f4f1ea; --sub:#a9a3b4; --accent:#ffb547; --accent2:#ff6b5a; --good:#5fd39a;
+    --r:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',system-ui,sans-serif;font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;text-align:inherit}
+  a{color:var(--accent)}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 18px 120px}
+  header{display:flex;align-items:center;gap:8px;margin-bottom:18px}
+  .logo{font-weight:900;font-size:1.5em;letter-spacing:-.04em;line-height:1}
+  .logo span{color:var(--accent)}
+  .mode{font-size:.68em;font-weight:700;border-radius:999px;padding:3px 9px;margin-left:4px;background:var(--panel2);color:var(--sub);border:1px solid var(--line)}
+  .mode.live{background:rgba(95,211,154,.12);color:var(--good);border-color:rgba(95,211,154,.4)}
+  .hbtn{font-size:.8em;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:6px 12px;margin-left:auto}
+  .progress{display:flex;gap:6px;margin-bottom:22px}
+  .progress i{flex:1;height:5px;border-radius:9px;background:var(--line);transition:.3s}
+  .progress i.on{background:var(--accent)}
+  .step{display:none;animation:in .35s ease}
+  .step.on{display:block}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .q-no{color:var(--accent);font-weight:700;font-size:.85em;margin-bottom:4px}
+  h2{font-size:1.45em;font-weight:900;letter-spacing:-.02em;line-height:1.3;margin-bottom:6px}
+  .hint{color:var(--sub);font-size:.9em;margin-bottom:18px}
+  .search,.field{width:100%;background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--text);font:inherit;outline:none;margin-bottom:16px}
+  .search:focus,.field:focus{border-color:var(--accent)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:var(--panel);border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:.92em;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#1a1205;font-weight:700}
+  .label{font-weight:700;font-size:.92em;margin:20px 0 10px;color:var(--sub)}
+
+  /* ---------- 표지 ---------- */
+  .cv{position:relative;aspect-ratio:2/3;border-radius:10px;overflow:hidden;container-type:inline-size;isolation:isolate;
+      background:linear-gradient(160deg,var(--a),var(--b));color:var(--ink);box-shadow:0 10px 26px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.07)}
+  .cv .shape{position:absolute;z-index:1}
+  .cv .grain{position:absolute;inset:0;z-index:2;opacity:.28;mix-blend-mode:overlay;pointer-events:none;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+  .cv::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(130% 95% at 50% 35%,transparent 55%,rgba(0,0,0,.32))}
+  .cv .top{position:absolute;top:6cqw;left:7cqw;right:7cqw;display:flex;justify-content:space-between;align-items:center;font-size:6cqw;font-weight:700;letter-spacing:.12em;z-index:4;opacity:.85}
+  .cv .top b{font-size:9cqw;letter-spacing:0;line-height:1}
+  .cv .ti{position:absolute;left:7cqw;right:7cqw;bottom:14cqw;z-index:4;font-family:'Black Han Sans','Noto Sans KR',sans-serif;font-weight:400;font-size:var(--fs);line-height:1.08;letter-spacing:-.01em;word-break:keep-all;overflow-wrap:anywhere}
+  .cv.serif .ti{font-family:'Noto Serif KR',serif;font-weight:900;letter-spacing:-.03em;line-height:1.15}
+  .cv .kd{position:absolute;left:7cqw;bottom:6.5cqw;z-index:4;font-size:4.4cqw;letter-spacing:.32em;font-weight:700;opacity:.72}
+  .cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:6}
+  .cv.v0 .shape{width:82cqw;height:82cqw;border-radius:50%;background:var(--acc);right:-24cqw;top:-16cqw;opacity:.93}
+  .cv.v1 .shape{width:170cqw;height:20cqw;background:var(--acc);left:-35cqw;top:52%;transform:rotate(-24deg);opacity:.92}
+  .cv.v1 .ti{bottom:auto;top:18cqw}
+  .cv.v2 .shape{width:96cqw;height:96cqw;left:2cqw;top:9%;border-radius:50%;opacity:.6;background:repeating-radial-gradient(circle,var(--acc) 0 1cqw,transparent 1cqw 7cqw)}
+  .cv.v3 .shape{inset:5cqw;border:1cqw solid var(--acc);border-radius:2cqw;opacity:.85}
+  .cv.v3 .ti{top:50%;bottom:auto;transform:translateY(-50%);text-align:center;left:11cqw;right:11cqw}
+  .cv.v3 .kd{left:0;right:0;text-align:center;bottom:11cqw}
+  .cv.v3 .top{top:10cqw;left:11cqw;right:11cqw}
+
+  /* ---------- 질문 1: 표지 그리드 ---------- */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 12px}
+  .tile{position:relative;display:block;min-width:0}
+  .tile .cv{transition:transform .15s, outline-color .15s;outline:3px solid transparent;outline-offset:2px}
+  .tile:active .cv{transform:scale(.97)}
+  .tile.on .cv{outline-color:var(--accent)}
+  .tile .ck{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#1a1205;display:none;place-items:center;font-weight:900;font-size:.8em;z-index:7;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .tile.on .ck{display:grid}
+  .tile .tt{display:block;font-size:.82em;font-weight:700;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .ty{display:block;font-size:.72em;color:var(--sub)}
+  .picked{display:flex;gap:10px;align-items:center;min-height:64px;margin-bottom:16px;padding:10px 12px;border-radius:14px;background:var(--panel2);border:1.5px dashed var(--line)}
+  .picked .empty{color:var(--sub);font-size:.88em}
+  .pk{position:relative;width:46px;flex:none}
+  .pk .cv{border-radius:6px}
+  .pk .x{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--text);color:var(--bg);font-size:.65em;font-weight:900;display:grid;place-items:center;z-index:7}
+  .picked .cnt{margin-left:auto;font-size:.8em;color:var(--sub);white-space:nowrap}
+
+  .ott-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .ott{display:flex;align-items:center;gap:10px;background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:14px;transition:.15s}
+  .ott .dot{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:.8em;color:#fff;flex:none}
+  .ott.on{border-color:var(--accent);background:#2a2216}
+  .ott .ck{margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:.75em}
+  .ott.on .ck{background:var(--accent);border-color:var(--accent);color:#1a1205}
+  .bar{position:fixed;left:0;right:0;bottom:0;padding:14px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%);z-index:5}
+  .bar .in{max-width:560px;margin:0 auto;display:flex;gap:10px}
+  .cta{flex:1;background:var(--accent);color:#1a1205;font-weight:900;border-radius:16px;padding:17px;font-size:1.05em;transition:.15s;text-align:center}
+  .cta:disabled{opacity:.35}
+  .back{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:17px 20px;font-weight:700}
+
+  /* ---------- 결과 카드 ---------- */
+  .res-head{margin-bottom:18px}
+  .res-head h2 span{color:var(--accent)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:20px;animation:in .45s ease both}
+  .hero{position:relative;padding:18px 16px 16px;display:flex;gap:16px;align-items:flex-end;overflow:hidden}
+  .hero .bgx{position:absolute;inset:-30px;background:var(--hbg);background-size:cover;background-position:center;filter:blur(22px) saturate(1.25);opacity:.6}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--panel) 2%,rgba(26,24,32,.35) 65%,rgba(26,24,32,.15))}
+  .hero .cv{width:112px;flex:none;z-index:1}
+  .hero .ht{position:relative;z-index:1;flex:1;min-width:0}
+  .rank{display:inline-block;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);border-radius:999px;padding:3px 11px;font-weight:900;font-size:.78em;margin-bottom:8px}
+  .hero h3{font-size:1.35em;font-weight:900;letter-spacing:-.02em;line-height:1.25}
+  .hero .meta{font-size:.8em;color:var(--sub);margin-top:2px}
+  .hero .num{font-size:2.2em;font-weight:900;color:var(--accent);line-height:1;margin-top:10px}
+  .hero .num small{font-size:.38em;color:var(--sub);font-weight:500;margin-left:3px}
+  .body{padding:4px 16px 16px}
+  .mini{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:14px}
+  .mini div{display:grid;grid-template-columns:56px 1fr 24px;align-items:center;gap:8px;font-size:.72em;color:var(--sub)}
+  .mini b{height:6px;border-radius:9px;background:var(--line);position:relative;overflow:hidden}
+  .mini b i{position:absolute;inset:0;background:var(--accent);border-radius:9px}
+  .why{background:var(--panel2);border-radius:12px;padding:12px 14px;font-size:.93em;margin-bottom:12px}
+  .why b{color:var(--accent)}
+  .cmt{font-size:.88em;color:var(--sub);border-left:3px solid var(--line);padding-left:10px;margin-bottom:14px}
+  .cmt em{font-style:normal;color:var(--text)}
+  .ov{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--text);margin-bottom:4px}
+  .where{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center}
+  .tag{font-size:.78em;font-weight:700;border-radius:8px;padding:5px 9px;background:var(--panel2);color:var(--sub);border:1px solid var(--line)}
+  .tag.mine{color:#fff;border-color:transparent}
+  .where a{font-size:.78em;margin-left:auto;text-decoration:none}
+  .chatbtn{display:flex;align-items:center;gap:10px;width:100%;background:linear-gradient(90deg,rgba(255,181,71,.14),rgba(255,181,71,.04));border:1px solid rgba(255,181,71,.35);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .chatbtn .ic{font-size:1.3em}
+  .chatbtn b{display:block;font-size:.92em}
+  .chatbtn small{display:block;font-size:.76em;color:var(--sub)}
+  .chatbtn .go{margin-left:auto;color:var(--accent);font-weight:900}
+  .fb{display:flex;gap:8px}
+  .fb button{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:.88em;text-align:center}
+  .fb button.done{background:var(--good);color:#06210f;border-color:var(--good);font-weight:700}
+  .sep{display:flex;align-items:center;gap:10px;margin:30px 0 8px;font-weight:900;font-size:1.1em}
+  .sep::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sep-sub{color:var(--sub);font-size:.85em;margin-bottom:14px}
+  .card.out{border:1.5px solid var(--accent2);box-shadow:0 0 0 4px rgba(255,107,90,.08)}
+  .card.out .rank{background:var(--accent2)}
+  .card.out .num{color:var(--accent2)}
+  .card.out .mini b i{background:var(--accent2)}
+  .card.out .why b{color:var(--accent2)}
+  .sub-note{font-size:.85em;background:rgba(255,107,90,.1);color:#ffb3a9;border-radius:10px;padding:10px 12px;margin-bottom:14px}
+  .thr{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:6px 0 18px}
+  .thr .row{display:flex;justify-content:space-between;font-size:.85em;color:var(--sub);margin-bottom:6px}
+  .thr .row b{color:var(--accent2);font-size:1.1em}
+  input[type=range]{width:100%;accent-color:var(--accent2)}
+  .none{color:var(--sub);font-size:.9em;text-align:center;padding:18px;background:var(--panel);border-radius:14px;margin-bottom:18px}
+  .demo{font-size:.75em;color:#6f6879;text-align:center;margin-top:28px;line-height:1.6}
+  .loading{text-align:center;padding:70px 0;color:var(--sub)}
+  .loading p{color:var(--text);font-weight:700;font-size:1.1em;margin-top:16px}
+  .spin{width:44px;height:44px;border-radius:50%;border:4px solid var(--line);border-top-color:var(--accent);margin:0 auto;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;font-size:.9em;opacity:0;transition:.25s;pointer-events:none;z-index:30}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+
+  /* ---------- 시트 (설정·채팅) ---------- */
+  .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:20;align-items:flex-end;justify-content:center}
+  .sheet-bg.on{display:flex}
+  .sheet{background:var(--panel);width:100%;max-width:560px;border-radius:22px 22px 0 0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));animation:up .25s ease}
+  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .sheet h3{font-size:1.2em;font-weight:900;margin-bottom:6px}
+  .sheet ol{font-size:.86em;color:var(--sub);padding-left:18px;margin:10px 0 14px}
+  .sheet .btns{display:flex;gap:8px}
+  .sheet .btns button{flex:1;border-radius:14px;padding:14px;font-weight:700;text-align:center}
+  .sheet .primary{background:var(--accent);color:#1a1205}
+  .sheet .ghost{background:var(--panel2);border:1px solid var(--line)}
+  .status{font-size:.85em;margin:10px 0 0;min-height:1.4em}
+  .status.err{color:var(--accent2)} .status.ok{color:var(--good)}
+  .note{font-size:.78em;color:#7d7689;margin-top:14px;line-height:1.6}
+
+  .chat{height:min(84vh,760px);display:flex;flex-direction:column;padding:16px 16px calc(12px + env(safe-area-inset-bottom))}
+  .chat-h{display:flex;gap:12px;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .chat-h .cv{width:46px;border-radius:6px;box-shadow:none}
+  .chat-h b{display:block;font-size:1.02em;line-height:1.3}
+  .chat-h small{color:var(--sub);font-size:.78em}
+  .chat-h .x{margin-left:auto;font-size:1.1em;padding:6px 10px;color:var(--sub)}
+  .msgs{flex:1;overflow-y:auto;padding:14px 2px;display:flex;flex-direction:column;gap:12px;overscroll-behavior:contain}
+  .msgs .sys{align-self:center;text-align:center;color:var(--sub);font-size:.85em;padding:30px 10px;line-height:1.7}
+  .msg{max-width:82%;align-self:flex-start;display:flex;flex-direction:column}
+  .msg .who{font-size:.72em;color:var(--sub);margin:0 0 3px 6px}
+  .msg .bub{background:var(--panel2);border:1px solid var(--line);padding:9px 13px;border-radius:16px 16px 16px 4px;font-size:.93em;white-space:pre-wrap;word-break:break-word}
+  .msg.me{align-self:flex-end;align-items:flex-end}
+  .msg.me .bub{background:var(--accent);color:#1a1205;border-color:var(--accent);border-radius:16px 16px 4px 16px}
+  .msg .bub.sp{filter:blur(6px);cursor:pointer;user-select:none}
+  .msg .spl{font-size:.7em;color:var(--accent2);font-weight:700;margin:0 6px 3px}
+  .msg .tm{font-size:.68em;color:#6f6879;margin:3px 6px 0;display:flex;gap:8px}
+  .msg .tm button{color:#6f6879;font-size:1em}
+  .chat-in{display:flex;gap:8px;align-items:center;padding-top:10px;border-top:1px solid var(--line)}
+  .chat-in input{flex:1;min-width:0;background:var(--panel2);border:1.5px solid var(--line);border-radius:999px;padding:12px 16px;color:var(--text);font:inherit;font-size:.95em;outline:none}
+  .chat-in input:focus{border-color:var(--accent)}
+  .chat-in .spb{border:1.5px solid var(--line);border-radius:999px;padding:10px 12px;font-size:.8em;color:var(--sub);white-space:nowrap}
+  .chat-in .spb.on{border-color:var(--accent2);color:var(--accent2);background:rgba(255,107,90,.1)}
+  .chat-in .send{background:var(--accent);color:#1a1205;border-radius:999px;padding:11px 16px;font-weight:900;font-size:.9em}
+  .chat-in :disabled{opacity:.4}
+  .chat-foot{font-size:.74em;color:#7d7689;text-align:center;margin-top:8px;min-height:1em}
+
+  /* ---------- 하단 탭 ---------- */
+  .wrap{padding-bottom:200px}
+  .view{display:none}
+  .view.on{display:block;animation:in .3s ease}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:rgba(15,14,19,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;color:#7d7689;font-size:.7em;font-weight:700;text-align:center}
+  .tab svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tab.on{color:var(--accent)}
+  .tab.on svg.fillable{fill:currentColor}
+  .bar{bottom:calc(62px + env(safe-area-inset-bottom));padding-bottom:12px}
+  .bar.hide{display:none}
+  .mode{cursor:pointer}
+  .toast{bottom:150px}
+
+  /* ---------- MY ---------- */
+  .my-h{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  .avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:900;font-size:1.3em;color:#1a1205;flex:none}
+  .my-h h2{margin:0}
+  .my-h p{color:var(--sub);font-size:.85em}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 4px;text-align:center}
+  .stat b{display:block;font-size:1.35em;font-weight:900;line-height:1.2}
+  .stat span{font-size:.7em;color:var(--sub)}
+  .taste{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:8px}
+  .taste .lb{font-size:.8em;color:var(--sub);margin-bottom:8px}
+  .taste .kw{display:flex;flex-wrap:wrap;gap:6px}
+  .taste .kw span{background:rgba(255,181,71,.12);color:var(--accent);border:1px solid rgba(255,181,71,.3);border-radius:999px;padding:4px 11px;font-size:.82em;font-weight:700}
+  .sec{margin-top:26px}
+  .sec-h{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+  .sec-h h3{font-size:1.08em;font-weight:900}
+  .sec-h span{color:var(--sub);font-size:.8em}
+  .hs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;margin:0 -18px;padding:2px 18px 8px;scrollbar-width:none}
+  .hs::-webkit-scrollbar{display:none}
+  .hi{width:100px;flex:none;scroll-snap-align:start;position:relative}
+  .hi .tt{display:block;font-size:.78em;font-weight:700;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hi .ty{display:block;font-size:.7em;color:var(--sub)}
+  .cvw{position:relative}
+  .badge{position:absolute;bottom:6px;right:6px;z-index:7;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);color:#fff;font-size:.68em;font-weight:900;border-radius:999px;padding:2px 8px}
+  .badge.hot{background:var(--accent2)}
+  .badge.acc{background:var(--accent);color:#1a1205}
+  .empty-box{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--sub);font-size:.86em}
+  .sess{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 0 6px;margin-bottom:12px}
+  .sess-h{display:flex;justify-content:space-between;gap:8px;padding:0 14px;font-size:.85em}
+  .sess-h b{font-weight:900}
+  .sess-h span{color:var(--sub);text-align:right}
+  .sess-src{padding:2px 14px 10px;font-size:.78em;color:var(--sub)}
+  .sess .hs{margin:0;padding:2px 14px 8px}
+  .sess .hi{width:84px}
+  .rv{display:flex;gap:12px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;align-items:flex-start}
+  .rv .cv{width:58px;flex:none;border-radius:7px}
+  .rv .tx{flex:1;min-width:0}
+  .rv b{display:block;font-size:.95em}
+  .rv p{font-size:.86em;color:var(--text);margin-top:3px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .rv p.sp{filter:blur(5px)}
+  .rv small{color:var(--sub);font-size:.72em}
+  .stars{color:var(--accent);letter-spacing:1px;font-size:.9em}
+  .stars i{color:var(--line);font-style:normal}
+  .more{display:block;width:100%;text-align:center;color:var(--sub);font-size:.85em;padding:10px}
+
+  /* ---------- 설정 ---------- */
+  .set-sec{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 16px;margin-bottom:14px}
+  .set-sec h3{font-size:1.05em;font-weight:900;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .set-sec .hint{margin-bottom:12px}
+  .set-sec .btns{display:flex;gap:8px}
+  .set-sec .btns button{flex:1;border-radius:14px;padding:13px;font-weight:700;text-align:center}
+  .primary{background:var(--accent);color:#1a1205}
+  .ghost{background:var(--panel2);border:1px solid var(--line)}
+  .danger{background:rgba(255,107,90,.12);color:var(--accent2);border:1px solid rgba(255,107,90,.35)}
+  .set-sec ol{font-size:.86em;color:var(--sub);padding-left:18px;margin:0 0 12px}
+  .pill{font-size:.7em;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--panel2);color:var(--sub);border:1px solid var(--line)}
+  .pill.ok{background:rgba(95,211,154,.12);color:var(--good);border-color:rgba(95,211,154,.4)}
+  .thr-row{display:flex;justify-content:space-between;font-size:.85em;color:var(--sub);margin-bottom:6px}
+  .thr-row b{color:var(--accent2)}
+
+  /* ---------- 작품 상세 · 후기 시트 ---------- */
+  .dt{max-height:88vh;overflow-y:auto}
+  .dt-top{display:flex;gap:16px;align-items:flex-end;margin-bottom:16px}
+  .dt-top .cv{width:120px;flex:none}
+  .dt-top h3{font-size:1.3em;line-height:1.25}
+  .dt-top .meta{font-size:.8em;color:var(--sub);margin:2px 0 10px}
+  .dt-act{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+  .dt-act button{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px 4px;font-size:.86em;text-align:center}
+  .dt-act button.done{background:var(--good);color:#06210f;border-color:var(--good);font-weight:700}
+  .ob{border-top:1px solid var(--line);padding:12px 0}
+  .ob .who{font-size:.78em;color:var(--sub);display:flex;justify-content:space-between}
+  .ob p{font-size:.9em;margin-top:3px}
+  .ob p.sp{filter:blur(5px);cursor:pointer}
+  .avg{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:.9em}
+  .avg b{font-size:1.4em;color:var(--accent)}
+  .x-btn{position:absolute;right:14px;top:14px;color:var(--sub);font-size:1.1em;padding:6px 10px}
+  .sheet{position:relative}
+  .star-in{display:flex;gap:6px;justify-content:center;margin:14px 0 6px}
+  .star-in button{font-size:2.3em;line-height:1;color:var(--line);transition:transform .1s}
+  .star-in button.on{color:var(--accent)}
+  .star-in button:active{transform:scale(1.15)}
+  .star-lb{text-align:center;color:var(--sub);font-size:.85em;min-height:1.3em;margin-bottom:12px}
+  textarea.field{min-height:96px;resize:none;line-height:1.5}
+  .rv-opt{display:flex;justify-content:space-between;align-items:center;margin:-4px 0 14px}
+  .rv-opt .spb{border:1.5px solid var(--line);border-radius:999px;padding:7px 12px;font-size:.8em;color:var(--sub)}
+  .rv-opt .spb.on{border-color:var(--accent2);color:var(--accent2);background:rgba(255,107,90,.1)}
+  .rv-opt small{color:var(--sub);font-size:.75em}
+
+  .set-sec .ott{padding:12px 10px;font-size:.88em;gap:8px;white-space:nowrap}
+  .set-sec .ott .dot{width:26px;height:26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">오티티<span>픽</span></div>
+    <span class="mode" id="modeBadge" title="설정에서 바꿀 수 있어요">데모 데이터</span>
+  </header>
+
+  <!-- ===== 추천 ===== -->
+  <div class="view on" id="viewRec">
+    <div class="progress"><i></i><i></i><i></i><i></i></div>
+    <section class="step" data-step="0">
+      <div class="q-no">질문 1 / 3</div>
+      <h2>재밌게 본 작품을<br>1~3개 골라주세요</h2>
+      <p class="hint">영화, 드라마, 애니 모두 괜찮아요. 고른 작품으로 취향을 파악해요.</p>
+      <div class="picked" id="picked"></div>
+      <input class="search" id="q" placeholder="🔍 작품 이름 검색 (예: 기생충, 귀멸)" autocomplete="off">
+      <div id="titleGrid"></div>
+    </section>
+    <section class="step" data-step="1">
+      <div class="q-no">질문 2 / 3</div>
+      <h2>지금은 어떤 게<br>보고 싶으세요?</h2>
+      <p class="hint">여러 개 골라도 돼요. 안 고르면 취향에 맞춰 골라드려요.</p>
+      <div class="label">종류</div>
+      <div class="chips" id="typeChips"></div>
+      <div class="label">장르 · 분위기</div>
+      <div class="chips" id="genreChips"></div>
+    </section>
+    <section class="step" data-step="2">
+      <div class="q-no">질문 3 / 3</div>
+      <h2>구독 중인 OTT를<br>알려주세요</h2>
+      <p class="hint">여기서 볼 수 있는 작품을 먼저 추천해요. 구독하지 않은 곳이라도 점수가 아주 높은 작품은 따로 알려드려요. 설정에서도 바꿀 수 있어요.</p>
+      <div class="ott-grid" data-otts></div>
+    </section>
+    <section class="step" data-step="3" id="result"></section>
+  </div>
+
+  <!-- ===== MY ===== -->
+  <div class="view" id="viewMy"></div>
+
+  <!-- ===== 설정 ===== -->
+  <div class="view" id="viewSet">
+    <h2 style="margin-bottom:16px">설정</h2>
+    <div class="set-sec">
+      <h3>작품 데이터 <span class="pill" id="setPill">데모</span></h3>
+      <p class="hint">TMDB API 키를 넣으면 실제 작품 수십만 개, 오늘 기준 한국 OTT 편성, 공식 포스터로 추천해요.</p>
+      <ol>
+        <li><a href="https://www.themoviedb.org/signup" target="_blank" rel="noopener">themoviedb.org</a>에 무료로 가입해요</li>
+        <li>설정 → API에서 키를 신청해요 (개인·비상업용)</li>
+        <li><b>API 키</b>나 <b>읽기 액세스 토큰</b>을 아래에 붙여 넣어요</li>
+      </ol>
+      <input class="field" id="keyIn" placeholder="TMDB API 키 또는 액세스 토큰" autocomplete="off" spellcheck="false">
+      <div class="btns"><button class="ghost" id="demoBtn">데모로 보기</button><button class="primary" id="connectBtn">연결하기</button></div>
+      <p class="status" id="keyStatus"></p>
+      <p class="note">키는 이 기기의 브라우저에만 저장되고, 다른 곳으로 보내지 않아요.</p>
+    </div>
+    <div class="set-sec" id="nickSec" style="display:none">
+      <h3>닉네임</h3>
+      <p class="hint">작품 채팅방과 후기에 보이는 이름이에요.</p>
+      <div style="display:flex;gap:8px"><input class="field" id="nickIn" maxlength="20" style="margin:0;flex:1"><button class="primary" id="nickSave" style="border-radius:14px;padding:0 18px;font-weight:700">저장</button></div>
+    </div>
+    <div class="set-sec">
+      <h3>내 구독 OTT</h3>
+      <p class="hint">추천할 때 여기서 볼 수 있는 작품을 먼저 골라요.</p>
+      <div class="ott-grid" data-otts></div>
+    </div>
+    <div class="set-sec">
+      <h3>구독 밖 강력 추천 기준</h3>
+      <p class="hint">구독하지 않은 OTT의 작품은 종합 점수가 이 기준을 넘을 때만 추천해요.</p>
+      <div class="thr-row"><span>기준 점수</span><b id="setThrV"></b></div>
+      <input type="range" id="setThr" min="70" max="95">
+    </div>
+    <div class="set-sec">
+      <h3>내 기록</h3>
+      <p class="hint">추천 기록, 볼래요, 취향작, 후기를 모두 지워요. 다른 사람이 볼 수 있게 남긴 후기와 채팅은 지워지지 않아요.</p>
+      <div class="btns"><button class="danger" id="wipeBtn">기록 모두 지우기</button></div>
+    </div>
+    <p class="demo">오티티픽 프로토타입 · 작품·평점·포스터: TMDB · OTT 정보: JustWatch<br>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+  </div>
+</div>
+
+<div class="bar" id="ctaBar"><div class="in">
+  <button class="back" id="backBtn">←</button>
+  <button class="cta" id="nextBtn">다음</button>
+</div></div>
+
+<nav class="tabbar"><div class="in">
+  <button class="tab on" data-tab="rec"><svg viewBox="0 0 24 24" class="fillable"><path d="M12 2.8l2.6 6 6.4.6-4.9 4.3 1.5 6.3L12 16.7 6.4 20l1.5-6.3L3 9.4l6.4-.6z"/></svg>추천</button>
+  <button class="tab" data-tab="my"><svg viewBox="0 0 24 24" class="fillable"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5"/></svg>MY</button>
+  <button class="tab" data-tab="set"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg>설정</button>
+</div></nav>
+<div class="toast" id="toast"></div>
+
+<!-- 작품 상세 -->
+<div class="sheet-bg" id="dtBg"><div class="sheet dt" id="dtBody"></div></div>
+
+<!-- 후기 쓰기 -->
+<div class="sheet-bg" id="rvBg"><div class="sheet">
+  <button class="x-btn" data-close="rvBg">✕</button>
+  <h3 id="rvTitle"></h3>
+  <div class="star-in" id="starIn"></div>
+  <div class="star-lb" id="starLb">별점을 눌러주세요</div>
+  <textarea class="field" id="rvText" maxlength="200" placeholder="한 줄 후기를 남겨주세요 (선택)"></textarea>
+  <div class="rv-opt"><button class="spb" id="rvSp">🙈 스포 포함</button><small id="rvCnt">0 / 200</small></div>
+  <div class="btns" style="display:flex;gap:8px"><button class="ghost" id="rvDel" style="flex:1;border-radius:14px;padding:14px;font-weight:700;text-align:center">삭제</button><button class="primary" id="rvSave" style="flex:2;border-radius:14px;padding:14px;font-weight:900;text-align:center">저장</button></div>
+</div></div>
+
+<!-- 작품 채팅방 -->
+<div class="sheet-bg" id="chatBg"><div class="sheet chat">
+  <div class="chat-h" id="chatHead"></div>
+  <div class="msgs" id="msgs"></div>
+  <form class="chat-in" id="chatForm">
+    <button type="button" class="spb" id="spBtn" title="스포일러가 담긴 메시지는 가려져요">🙈 스포</button>
+    <input id="chatIn" maxlength="300" placeholder="이 작품 어땠어요?" autocomplete="off">
+    <button class="send" id="sendBtn">전송</button>
+  </form>
+  <p class="chat-foot" id="chatFoot"></p>
+</div></div>
+
+<script id="engine">
+/* ================= 공통 ================= */
+const OTTS = {
+  netflix:{name:'넷플릭스',short:'N',color:'#e50914',re:/netflix/i},
+  tving:{name:'티빙',short:'T',color:'#ff153c',re:/tving/i},
+  wavve:{name:'웨이브',short:'W',color:'#1f4bff',re:/wavve/i},
+  coupang:{name:'쿠팡플레이',short:'C',color:'#00a3e0',re:/coupang/i},
+  disney:{name:'디즈니+',short:'D+',color:'#113ccf',re:/disney/i},
+  watcha:{name:'왓챠',short:'W',color:'#ff0558',re:/watcha/i},
+  laftel:{name:'라프텔',short:'L',color:'#816bff',re:/laftel/i},
+  apple:{name:'Apple TV+',short:'',color:'#555',re:/apple\s*tv/i}
+};
+const ottKey = name => Object.keys(OTTS).find(k=>OTTS[k].re.test(name)) || null;
+const KIND_EMO = {'영화':'🎬','드라마':'📺','애니':'🖍️'};
+const CC_NAME = {JP:'일본',US:'미국',KR:'한국',CN:'중국',FR:'프랑스',GB:'영국',TW:'대만'};
+const LANG2CC = {ja:'JP',en:'US',ko:'KR',zh:'CN',cn:'CN',fr:'FR',es:'ES',de:'DE',it:'IT',hi:'IN',th:'TH'};
+function flag(cc){ return (cc && /^[A-Z]{2}$/i.test(cc)) ? String.fromCodePoint(...[...cc.toUpperCase()].map(c=>0x1F1E6+c.charCodeAt(0)-65)) : '🌏'; }
+function emo(w){ return w.k==='애니' ? flag(w.cc) : KIND_EMO[w.k]; }
+const GENRES = ['액션','코미디','로맨스','스릴러','SF','판타지','드라마','힐링','가족','범죄','미스터리','호러'];
+const clamp = x => Math.max(0, Math.min(1, x));
+
+/* ================= 데모 데이터 ================= */
+const DB = [
+ {id:1,t:'기생충',y:2019,k:'영화',g:['스릴러','드라마','코미디'],tags:['반전','계급','긴장감','블랙코미디'],ext:8.5,app:4.7,n:1240,ott:['watcha','wavve'],c:'두 번째 볼 때 계단 장면이 완전히 다르게 보여요'},
+ {id:2,t:'인터스텔라',y:2014,k:'영화',g:['SF','드라마'],tags:['우주','가족','감동','시간','영상미'],ext:8.4,app:4.8,n:1810,ott:['netflix','coupang'],c:'아빠랑 같이 봤는데 둘 다 울었어요'},
+ {id:3,t:'인셉션',y:2010,k:'영화',g:['SF','액션','스릴러'],tags:['반전','두뇌게임','꿈','몰입'],ext:8.4,app:4.6,n:1320,ott:['netflix','wavve'],c:'마지막 팽이 장면 때문에 잠을 못 잤음'},
+ {id:4,t:'라라랜드',y:2016,k:'영화',g:['로맨스','드라마'],tags:['음악','꿈','여운','영상미'],ext:7.9,app:4.5,n:1105,ott:['watcha','tving'],c:'엔딩 5분이 영화 전체를 바꿔요'},
+ {id:5,t:'어바웃 타임',y:2013,k:'영화',g:['로맨스','판타지','힐링'],tags:['시간여행','가족','힐링','여운'],ext:7.9,app:4.7,n:1502,ott:['netflix','watcha'],c:'지친 날 보면 하루가 다르게 보여요'},
+ {id:6,t:'센과 치히로의 행방불명',y:2001,k:'애니',cc:'JP',g:['판타지','가족'],tags:['지브리','성장','힐링','영상미'],ext:8.5,app:4.8,n:990,ott:['netflix'],c:'초등학생 조카랑 봤는데 저만 빠져듦'},
+ {id:7,t:'너의 이름은.',y:2016,k:'애니',cc:'JP',g:['로맨스','판타지'],tags:['시간','감동','영상미','반전'],ext:8.5,app:4.6,n:1130,ott:['netflix','laftel','watcha'],c:'OST 들으면 아직도 소름'},
+ {id:8,t:'스파이더맨: 뉴 유니버스',y:2018,k:'애니',cc:'US',g:['액션','SF'],tags:['영상미','성장','히어로','쾌감'],ext:8.4,app:4.6,n:640,ott:['netflix'],c:'작화가 미쳤어요. 히어로물 안 좋아해도 추천'},
+ {id:9,t:'탑건: 매버릭',y:2022,k:'영화',g:['액션','드라마'],tags:['쾌감','비행','감동'],ext:8.2,app:4.6,n:870,ott:['coupang','tving'],c:'부모님이 극장 다음으로 제일 좋아하신 영화'},
+ {id:10,t:'올드보이',y:2003,k:'영화',g:['스릴러','미스터리'],tags:['반전','복수','긴장감'],ext:8.2,app:4.5,n:760,ott:['watcha','wavve'],c:'반전 알고 봐도 충격'},
+ {id:11,t:'범죄도시',y:2017,k:'영화',g:['액션','범죄','코미디'],tags:['통쾌','형사','쾌감'],ext:7.6,app:4.4,n:1420,ott:['netflix','tving'],c:'스트레스 받을 때 이만한 게 없음'},
+ {id:12,t:'극한직업',y:2019,k:'영화',g:['코미디','액션','범죄'],tags:['웃음','형사','통쾌'],ext:7.4,app:4.3,n:1380,ott:['netflix','wavve'],c:'온 가족이 같이 웃을 수 있는 영화'},
+ {id:13,t:'코코',y:2017,k:'애니',cc:'US',g:['가족','판타지','드라마'],tags:['가족','감동','음악','반전'],ext:8.2,app:4.8,n:1050,ott:['disney'],c:'할머니 생각나서 엉엉 울었어요'},
+ {id:14,t:'인사이드 아웃 2',y:2024,k:'애니',cc:'US',g:['가족','코미디','힐링'],tags:['감정','성장','웃음','감동'],ext:7.6,app:4.5,n:720,ott:['disney'],c:'어른이 봐야 하는 애니'},
+ {id:15,t:'헤어질 결심',y:2022,k:'영화',g:['로맨스','미스터리'],tags:['여운','수사','영상미'],ext:7.3,app:4.3,n:540,ott:['tving','watcha'],c:'보고 나서 일주일 동안 생각남'},
+ {id:16,t:'오징어 게임',y:2021,k:'드라마',g:['스릴러','드라마'],tags:['생존','긴장감','계급','몰입'],ext:7.9,app:4.4,n:2100,ott:['netflix'],c:'한 번 틀면 끝까지 달리게 됨'},
+ {id:17,t:'더 글로리',y:2022,k:'드라마',g:['스릴러','드라마'],tags:['복수','몰입','긴장감'],ext:8.1,app:4.6,n:1890,ott:['netflix'],c:'주말 이틀 순삭. 복수극의 정석'},
+ {id:18,t:'이상한 변호사 우영우',y:2022,k:'드라마',g:['드라마','힐링','코미디'],tags:['힐링','성장','따뜻함','법정'],ext:8.5,app:4.7,n:1600,ott:['netflix'],c:'부모님이랑 같이 보기 딱 좋은 드라마'},
+ {id:19,t:'나의 아저씨',y:2018,k:'드라마',g:['드라마','힐링'],tags:['위로','여운','따뜻함'],ext:8.7,app:4.9,n:1720,ott:['netflix','tving'],c:'인생 드라마. 힘들 때마다 다시 봐요'},
+ {id:20,t:'응답하라 1988',y:2015,k:'드라마',g:['가족','코미디','드라마'],tags:['가족','추억','따뜻함','웃음','힐링'],ext:8.8,app:4.9,n:2300,ott:['netflix','tving'],c:'세대 상관없이 다 좋아하는 드라마'},
+ {id:21,t:'슬기로운 의사생활',y:2020,k:'드라마',g:['드라마','힐링','코미디'],tags:['우정','따뜻함','음악','힐링'],ext:8.6,app:4.8,n:1450,ott:['netflix','tving'],c:'밴드 장면 나올 때마다 행복해짐'},
+ {id:22,t:'시그널',y:2016,k:'드라마',g:['스릴러','범죄','판타지'],tags:['수사','시간','반전','긴장감'],ext:8.6,app:4.8,n:1380,ott:['netflix','tving'],c:'한국 장르물 최고봉. 시즌2 기다려요'},
+ {id:23,t:'비밀의 숲',y:2017,k:'드라마',g:['스릴러','범죄','미스터리'],tags:['수사','두뇌게임','반전','몰입'],ext:8.5,app:4.7,n:1010,ott:['netflix','tving'],c:'대사 하나도 놓치면 안 됨'},
+ {id:24,t:'브레이킹 배드',y:2008,k:'드라마',g:['범죄','스릴러','드라마'],tags:['몰입','긴장감','성장'],ext:8.9,app:4.8,n:880,ott:['netflix'],c:'시즌 1만 버티면 인생 드라마'},
+ {id:25,t:'기묘한 이야기',y:2016,k:'드라마',g:['SF','호러','미스터리'],tags:['우정','80년대','모험','몰입'],ext:8.6,app:4.6,n:960,ott:['netflix'],c:'아이들 우정이 진짜 찐함'},
+ {id:26,t:'웬즈데이',y:2022,k:'드라마',g:['미스터리','코미디','판타지'],tags:['수사','블랙코미디','독특함'],ext:8.4,app:4.4,n:820,ott:['netflix'],c:'주인공 캐릭터 하나로 끝까지 봄'},
+ {id:27,t:'무빙',y:2023,k:'드라마',g:['액션','SF','가족'],tags:['초능력','가족','감동','히어로'],ext:8.5,app:4.7,n:1150,ott:['disney'],c:'히어로물인데 부모님이 더 우심'},
+ {id:28,t:'눈물의 여왕',y:2024,k:'드라마',g:['로맨스','코미디','드라마'],tags:['설렘','웃음','감동'],ext:8.6,app:4.5,n:1330,ott:['netflix','tving'],c:'웃다가 울다가 바쁜 드라마'},
+ {id:29,t:'선재 업고 튀어',y:2024,k:'드라마',g:['로맨스','판타지','코미디'],tags:['시간여행','설렘','음악'],ext:8.7,app:4.7,n:1270,ott:['tving','netflix'],c:'설렘 주의. 다시 보기 3번째'},
+ {id:30,t:'폭싹 속았수다',y:2025,k:'드라마',g:['드라마','가족','로맨스'],tags:['가족','추억','감동','여운','따뜻함'],ext:8.9,app:4.9,n:1980,ott:['netflix'],c:'엄마한테 전화하고 싶어지는 드라마'},
+ {id:31,t:'귀멸의 칼날',y:2019,k:'애니',cc:'JP',g:['액션','판타지'],tags:['성장','영상미','쾌감','가족'],ext:8.7,app:4.7,n:1540,ott:['netflix','laftel','tving'],c:'작화 때문에 입문했다가 스토리에 울게 됨'},
+ {id:32,t:'진격의 거인',y:2013,k:'애니',cc:'JP',g:['액션','판타지','미스터리'],tags:['반전','몰입','긴장감'],ext:8.8,app:4.8,n:1420,ott:['netflix','laftel','watcha'],c:'떡밥 회수가 미쳤어요'},
+ {id:33,t:'스파이 패밀리',y:2022,k:'애니',cc:'JP',g:['코미디','액션','가족'],tags:['웃음','가족','힐링','따뜻함'],ext:8.5,app:4.6,n:980,ott:['netflix','laftel'],c:'아냐 보는 맛에 봄 ㅋㅋ'},
+ {id:34,t:'장송의 프리렌',y:2023,k:'애니',cc:'JP',g:['판타지','드라마','힐링'],tags:['여운','성장','힐링','모험','감동'],ext:8.9,app:4.9,n:1100,ott:['laftel','netflix'],c:'잔잔한데 매화 마음을 울려요'},
+ {id:35,t:'주술회전',y:2020,k:'애니',cc:'JP',g:['액션','판타지','호러'],tags:['쾌감','성장','영상미'],ext:8.6,app:4.6,n:1020,ott:['laftel','netflix','tving'],c:'전투 작화가 극장판급'},
+ {id:36,t:'체인소 맨',y:2022,k:'애니',cc:'JP',g:['액션','호러','코미디'],tags:['독특함','쾌감','블랙코미디'],ext:8.5,app:4.4,n:760,ott:['laftel','tving'],c:'B급 감성 좋아하면 무조건'},
+ {id:37,t:'바이올렛 에버가든',y:2018,k:'애니',cc:'JP',g:['드라마','판타지'],tags:['감동','영상미','여운','성장'],ext:8.6,app:4.8,n:690,ott:['netflix','laftel'],c:'10화는 휴지 필수'},
+ {id:38,t:'하이큐!!',y:2014,k:'애니',cc:'JP',g:['코미디','드라마'],tags:['성장','우정','열정','쾌감'],ext:8.6,app:4.8,n:880,ott:['laftel','netflix'],c:'운동 싫어해도 배구 보게 됨'},
+ {id:39,t:'아케인',y:2021,k:'애니',cc:'US',g:['액션','SF','판타지'],tags:['영상미','가족','몰입','반전'],ext:8.8,app:4.8,n:910,ott:['netflix'],c:'게임 몰라도 OK. 작화 혁명'},
+ {id:40,t:'세브란스: 단절',y:2022,k:'드라마',g:['SF','미스터리','스릴러'],tags:['두뇌게임','독특함','반전','몰입'],ext:8.4,app:4.7,n:430,ott:['apple'],c:'이거 보려고 애플TV 구독함'},
+ {id:41,t:'쇼군',y:2024,k:'드라마',g:['드라마','액션'],tags:['몰입','긴장감','영상미'],ext:8.6,app:4.6,n:380,ott:['disney'],c:'사극 좋아하면 무조건'},
+ {id:42,t:'파친코',y:2022,k:'드라마',g:['드라마','가족'],tags:['가족','여운','감동','추억'],ext:8.1,app:4.6,n:410,ott:['apple'],c:'할머니 세대 이야기에 먹먹해짐'},
+];
+const DEMO = DB.map(w=>({key:'d'+w.id, src:'demo', t:w.t, y:w.y, k:w.k, cc:w.cc||'', genres:w.g, tags:w.tags,
+  ext:w.ext, vc:null, app:w.app, n:w.n, ott:w.ott, c:w.c, overview:'', posterPath:null, backdropPath:null}));
+
+const DemoEngine = {
+  recommend(liked, genres, kinds, myOtts, thr, skip){
+    const feat = w => new Set([...w.genres, ...w.tags]);
+    const likedKeys = liked.map(l=>l.key);
+    const all = DEMO.filter(w=>!likedKeys.includes(w.key) && !skip.has(w.key) && (!kinds.length||kinds.includes(w.k))).map(w=>{
+      let best={v:0,shared:[],from:null};
+      liked.forEach(l=>{const A=feat(w),B=feat(l);const sh=[...A].filter(x=>B.has(x));const v=sh.length/Math.min(A.size,B.size);if(v>best.v)best={v,shared:sh,from:l}});
+      const taste=clamp(best.v*1.6);
+      const matched=genres.filter(g=>w.genres.includes(g)||w.tags.includes(g));
+      const genre=genres.length?(matched.length?0.65+0.35*matched.length/genres.length:0):0.8;
+      const ext=clamp((w.ext-6)/3);
+      const app=clamp(((w.app*w.n+4.0*200)/(w.n+200)-3.5)/1.4);   // 리뷰 수가 적으면 평균 쪽으로 보정
+      return {w,total:Math.round(100*(0.32*taste+0.28*genre+0.18*ext+0.22*app)),parts:{taste,genre,ext,app},shared:best.shared,from:best.from,matched,viaRec:false};
+    }).sort((a,b)=>b.total-a.total);
+    const onMine = r => r.w.ott.some(o=>myOtts.includes(o));
+    return {mine:all.filter(onMine).slice(0,3), outside:all.filter(r=>!onMine(r)&&r.total>=thr).slice(0,2)};
+  }
+};
+
+/* ================= TMDB 실시간 엔진 ================= */
+const IMGB = 'https://image.tmdb.org/t/p/';
+// TMDB 장르 ID → 앱 장르 이름
+const GN = {
+  movie:{28:['액션'],12:['모험'],16:['애니'],35:['코미디'],80:['범죄'],99:['다큐'],18:['드라마'],10751:['가족'],14:['판타지'],36:['역사'],27:['호러'],10402:['음악'],9648:['미스터리'],10749:['로맨스'],878:['SF'],10770:['TV영화'],53:['스릴러'],10752:['전쟁'],37:['서부']},
+  tv:{10759:['액션','모험'],16:['애니'],35:['코미디'],80:['범죄'],99:['다큐'],18:['드라마'],10751:['가족'],10762:['키즈'],9648:['미스터리'],10763:['뉴스'],10764:['리얼리티'],10765:['SF','판타지'],10766:['연속극'],10767:['토크'],10768:['전쟁'],37:['서부']}
+};
+// 앱 장르 → TMDB 장르 ID [영화, TV]. TV에는 로맨스·스릴러·호러 장르가 따로 없어서 가장 가까운 장르로 대체함
+const GMAP = {
+  '액션':[[28],[10759]], '코미디':[[35],[35]], '로맨스':[[10749],[18]], '스릴러':[[53],[9648,80]],
+  'SF':[[878],[10765]], '판타지':[[14],[10765]], '드라마':[[18],[18]], '힐링':[[10751,35],[10751,35]],
+  '가족':[[10751],[10751]], '범죄':[[80],[80]], '미스터리':[[9648],[9648]], '호러':[[27],[9648]]
+};
+const TV_EXCLUDE = [10763,10764,10766,10767]; // 뉴스·리얼리티·연속극·토크쇼 제외
+
+function toItem(x, media){
+  media = x.media_type || media;
+  const gids = x.genre_ids || (x.genres||[]).map(g=>g.id);
+  const date = x.release_date || x.first_air_date || '';
+  const lang = x.original_language || '';
+  return {
+    key:(media==='movie'?'m':'t')+x.id, src:'live', media, id:x.id,
+    t:x.title||x.name||'(제목 없음)', y:date.slice(0,4), k:gids.includes(16)?'애니':media==='movie'?'영화':'드라마',
+    cc:(x.origin_country&&x.origin_country[0])||LANG2CC[lang]||'', lang, gids,
+    genres:[...new Set(gids.flatMap(g=>(GN[media]||{})[g]||[]))],
+    ext:Math.round((x.vote_average||0)*10)/10, vc:x.vote_count||0, app:null, n:0, ott:null, c:null,
+    overview:x.overview||'', posterPath:x.poster_path||null, backdropPath:x.backdrop_path||null
+  };
+}
+
+// 오티티픽 서버(Supabase) 주소. 비워두면 서버 없이 동작한다(데모 또는 개인 TMDB 키).
+const SUPABASE = {url:'', key:''};
+const LiveEngine = {
+  key:'', proxy:false, ids:{}, provCache:new Map(), sig:'', scored:[],
+  async api(path, params={}){
+    const proxy = this.proxy && SUPABASE.url;            // 서버를 거치면 TMDB 키가 필요 없다
+    const u = new URL(proxy ? SUPABASE.url.replace(/\/$/,'')+'/functions/v1/tmdb/3'+path : 'https://api.themoviedb.org/3'+path);
+    const bearer = !proxy && this.key.length > 40;      // v4 읽기 토큰은 길고, v3 키는 32자
+    const p = {language:'ko-KR', ...params};
+    if(!proxy && !bearer) p.api_key = this.key;
+    Object.entries(p).forEach(([k,v])=>{ if(v!==undefined && v!=='') u.searchParams.set(k,v); });
+    const headers = {accept:'application/json'};
+    if(proxy){ const tok = (typeof Social!=='undefined' && await Social.token()) || SUPABASE.key; headers.apikey = SUPABASE.key; headers.Authorization = 'Bearer '+tok; }
+    else if(bearer) headers.Authorization = 'Bearer '+this.key;
+    const r = await fetch(u.toString(), {headers});
+    if(r.status===401) throw new Error('KEY');
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  },
+  async init(){                                          // 한국 OTT 목록 → 서비스별 provider ID
+    this.ids = {};
+    for(const m of ['movie','tv']){
+      const d = await this.api(`/watch/providers/${m}`, {watch_region:'KR'});
+      (d.results||[]).forEach(p=>{ const k=ottKey(p.provider_name); if(k)(this.ids[k]=this.ids[k]||new Set()).add(p.provider_id); });
+    }
+    this.sig=''; this.scored=[];
+  },
+  provIds(keys){ return [...new Set(keys.flatMap(k=>[...(this.ids[k]||[])]))].join('|'); },
+  async trending(){ const d=await this.api('/trending/all/week'); return (d.results||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').map(x=>toItem(x)); },
+  async search(q){ const d=await this.api('/search/multi',{query:q,include_adult:false}); return (d.results||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').map(x=>toItem(x)); },
+  async providers(it){
+    if(!this.provCache.has(it.key)){
+      const d = await this.api(`/${it.media}/${it.id}/watch/providers`).catch(()=>({}));
+      const kr = (d.results||{}).KR || {};
+      this.provCache.set(it.key, {ott:[...new Set((kr.flatrate||[]).map(p=>ottKey(p.provider_name)).filter(Boolean))], link:kr.link||null});
+    }
+    const c=this.provCache.get(it.key); it.ott=c.ott; it.link=c.link; return it.ott;
+  },
+  async build(liked, genres, kinds){
+    const K = kinds.length ? kinds : ['영화','드라마','애니'];
+    const groups = [];
+    if(K.includes('영화')) groups.push({media:'movie',anime:false});
+    if(K.includes('드라마')) groups.push({media:'tv',anime:false});
+    if(K.includes('애니')) groups.push({media:'movie',anime:true},{media:'tv',anime:true});
+    const allProv = this.provIds(Object.keys(OTTS));
+    const reqs = [];
+    for(const g of groups){
+      const gids = [...new Set(genres.flatMap(x=>GMAP[x][g.media==='movie'?0:1]))];
+      const base = {watch_region:'KR', with_watch_monetization_types:'flatrate', include_adult:false,
+        with_genres: g.anime ? '16' : gids.join('|'), without_genres: g.anime ? undefined : (g.media==='tv' ? [16,...TV_EXCLUDE].join('|') : '16'),
+        with_watch_providers: allProv || undefined};
+      // ① 요즘 많이 보는 괜찮은 작품  ② 평점이 아주 높은 검증된 작품
+      reqs.push(this.api(`/discover/${g.media}`, {...base, sort_by:'popularity.desc', 'vote_average.gte':7, 'vote_count.gte':g.media==='movie'?200:80}).then(d=>({g,d})));
+      reqs.push(this.api(`/discover/${g.media}`, {...base, sort_by:'vote_average.desc', 'vote_count.gte':g.media==='movie'?1500:300}).then(d=>({g,d})));
+    }
+    // ③ 고른 작품을 좋아한 사람들이 본 작품 (취향 신호가 가장 강함)
+    for(const l of liked) reqs.push(this.api(`/${l.media}/${l.id}/recommendations`).then(d=>({rec:l,d})));
+
+    const settled = await Promise.allSettled(reqs);
+    const ok = settled.filter(s=>s.status==='fulfilled').map(s=>s.value);
+    if(!ok.length) throw settled[0].reason;
+
+    const pool = new Map(), rec = new Map();
+    const likedKeys = new Set(liked.map(l=>l.key));
+    for(const v of ok){
+      (v.d.results||[]).forEach((x,i)=>{
+        if(v.rec && x.media_type && x.media_type!=='movie' && x.media_type!=='tv') return;
+        const it = toItem(x, v.rec ? v.rec.media : v.g.media);
+        if(!pool.has(it.key)) pool.set(it.key, it);
+        if(v.rec){
+          const r = rec.get(it.key);
+          if(!r) rec.set(it.key, {rank:i, hits:1, from:v.rec});
+          else { r.hits++; if(i<r.rank){ r.rank=i; r.from=v.rec; } }
+        }
+      });
+    }
+    const likedLangs = new Set(liked.map(l=>l.lang).filter(x=>x && x!=='en'));
+    return [...pool.values()]
+      .filter(it=>!likedKeys.has(it.key) && K.includes(it.k) && !(it.media==='tv' && it.gids.some(g=>TV_EXCLUDE.includes(g))))
+      .map(it=>{
+        let best={v:0,shared:[],from:null};
+        liked.forEach(l=>{const A=new Set(it.genres),B=new Set(l.genres);const sh=[...A].filter(x=>B.has(x));const v=(A.size&&B.size)?sh.length/Math.min(A.size,B.size):0;if(v>best.v)best={v,shared:sh,from:l}});
+        const rr = rec.get(it.key);
+        const r = rr ? clamp(1 - rr.rank/40 + 0.15*(rr.hits-1)) : 0;
+        const taste = clamp(0.65*r + 0.35*best.v + (likedLangs.has(it.lang)?0.08:0));
+        const col = it.media==='movie'?0:1;
+        const matched = genres.filter(g=>GMAP[g][col].some(id=>it.gids.includes(id)));
+        const genre = genres.length ? (matched.length ? 0.65+0.35*matched.length/genres.length : 0) : 0.8;
+        const vb = (it.ext*it.vc + 6.5*300)/(it.vc+300);          // 투표 수가 적으면 평균 쪽으로 보정
+        const ext = clamp((vb-6)/3);
+        // 앱 자체 평점 DB가 생기기 전까지는 취향·장르·외부 평점만으로 계산
+        const total = Math.round(100*(0.40*taste + 0.35*genre + 0.25*ext));
+        return {w:it,total,parts:{taste,genre,ext,app:null},shared:best.shared,from:rr?rr.from:best.from,viaRec:!!rr,matched};
+      }).sort((a,b)=>b.total-a.total);
+  },
+  async recommend(liked, genres, kinds, myOtts, thr, skip){
+    const sig = JSON.stringify([liked.map(l=>l.key),genres,kinds]);
+    if(sig!==this.sig){ this.scored = await this.build(liked,genres,kinds); this.sig = sig; }
+    const cand = this.scored.filter(r=>!skip.has(r.w.key));
+    const mine=[], outside=[];
+    for(let i=0; i<cand.length && i<64; i+=8){                // OTT 정보는 점수 높은 순으로 필요한 만큼만 조회
+      const batch = cand.slice(i,i+8);
+      await Promise.all(batch.map(r=>this.providers(r.w)));
+      for(const r of batch){
+        const o=r.w.ott||[]; if(!o.length) continue;          // 한국 구독형 OTT에 없는 작품은 제외
+        if(o.some(x=>myOtts.includes(x))){ if(mine.length<3) mine.push(r); }
+        else if(r.total>=thr && outside.length<2) outside.push(r);
+      }
+      const outsideDone = outside.length>=2 || batch[batch.length-1].total<thr;
+      if(mine.length>=3 && outsideDone) break;
+    }
+    return {mine, outside};
+  }
+};
+if (typeof module!=='undefined') module.exports={DEMO,DemoEngine,LiveEngine,toItem,flag,IMGB};
+</script>
+
+<script>
+let MODE='demo';
+const Engine = () => MODE==='live' ? LiveEngine : DemoEngine;
+const store = { get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
+const S = {view:'rec', step:0, liked:[], genres:[], kinds:[], otts:store.get('myOtts',[]), thr:store.get('thr',85), seen:new Set(), shown:[], trend:null, round:0, req:0, last:[], cards:{}, sessAt:null};
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1700)}
+function hashN(s){let h=7;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return h}
+function errMsg(e){
+  if(e && e.message==='KEY') return 'TMDB 키가 올바르지 않아요. 키를 다시 확인해주세요.';
+  if(e instanceof TypeError) return '외부 연결이 막혀 있어요. Claude 미리보기 화면에서는 실시간 모드가 동작하지 않아요. 파일을 받아 브라우저에서 열거나 웹에 배포해서 써주세요.';
+  return '잠시 후 다시 시도해주세요. ('+(e&&e.message||e)+')';
+}
+function kindLabel(w){ return w.k==='애니' ? `${CC_NAME[(w.cc||'').toUpperCase()]||''} 애니`.trim() : w.k; }
+function fmtDate(t){ const d=new Date(t), h=d.getHours(); return `${d.getMonth()+1}월 ${d.getDate()}일 ${h<12?'오전':'오후'} ${h%12||12}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function starsHTML(n){ return `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(5-n)}</i></span>`; }
+const STAR_LB=['','별로였어요','그저 그랬어요','괜찮았어요','재밌었어요','인생작이에요!'];
+
+/* ---------- 함께 쓰는 기능 (채팅·후기·MY 동기화) ----------
+   claude.ai에서 열면 claude.ai 저장소를, 오티티픽 서버(Supabase)가 설정돼 있으면 Supabase를 쓴다. 둘 다 없으면 이 기기에만 저장. */
+const ADJ=['졸린','배부른','신난','수상한','느긋한','용감한','몰래 보는','밤새는','감동받은','웃음 많은'];
+const NOUN=['팝콘','리모컨','소파','콜라','나쵸','고양이','부엉이','감자','영사기','담요'];
+function randomNick(){ return ADJ[Math.random()*ADJ.length|0]+' '+NOUN[Math.random()*NOUN.length|0]+(Math.random()*90+10|0); }
+const Social = {
+  kind:'none', me:null, canWrite:null, isOwner:false, ready:null, sb:null, db:null, user:null,
+  init(){ if(!this.ready) this.ready=this._init().catch(e=>{ console.warn('social',e); this.kind='none'; }); return this.ready; },
+  async _init(){
+    if(SUPABASE.url){
+      const m = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      this.sb = m.createClient(SUPABASE.url, SUPABASE.key, {auth:{persistSession:true, autoRefreshToken:true}});
+      let {data:{session}} = await this.sb.auth.getSession();
+      if(!session){ const r = await this.sb.auth.signInAnonymously(); if(r.error) throw r.error; session = r.data.session; }
+      this.me = session.user.id; this.canWrite = true; this.kind='supabase';
+      return;
+    }
+    const use = window.claude && typeof window.claude.use==='function' ? n=>window.claude.use(n).catch(()=>null) : null;
+    if(!use) return;
+    const [db,user] = await Promise.all([use('db'),use('user')]);
+    if(!db) return;
+    this.db=db; this.user=user; this.kind='claude';
+    if(user){
+      try{ this.me = await user.id(); }catch(e){}
+      try{ this.canWrite = await user.can('data.write'); }catch(e){}
+      try{ this.isOwner = !!(await user.isOwner()); }catch(e){}
+    }
+  },
+  async token(){ if(!this.sb) return null; try{ const {data}=await this.sb.auth.getSession(); return data.session && data.session.access_token; }catch(e){ return null; } },
+  nickname(){ let n=store.get('nick',''); if(!n){ n=randomNick(); store.set('nick',n); } return n; },
+  async names(ids){
+    if(this.kind!=='claude' || !this.user || !ids.length) return {};
+    try{ const ps=(await this.user.profiles(ids))||{}; return Object.fromEntries(ids.map(i=>[i,(ps[i]&&ps[i].name)||''])); }catch(e){ return {}; }
+  },
+  /* MY 기록 */
+  async loadState(){
+    if(this.kind==='claude' && this.me){ const s=await this.db.doc(`data/users/${this.me}/me`).get(); return s.exists ? s.data() : null; }
+    if(this.kind==='supabase'){ const {data,error}=await this.sb.from('user_state').select('data').eq('uid',this.me).maybeSingle(); if(error) throw error; return data && data.data; }
+    return null;
+  },
+  async saveState(o){
+    if(this.kind==='claude' && this.me) return this.db.doc(`data/users/${this.me}/me`).set(o);
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('user_state').upsert({uid:this.me, data:o, updated_at:new Date().toISOString()}); if(error) throw error; }
+  },
+  /* 후기 */
+  async saveReview(key, r){
+    if(this.kind==='claude' && this.me) return this.db.doc(`reviews/${key}/by/${this.me}`).set({uid:this.me, ...r});
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('reviews').upsert({room:key, uid:this.me, nickname:this.nickname(), title:r.t, stars:r.stars, text:r.text, spoiler:r.spoiler, updated_at:new Date(r.at).toISOString()}); if(error) throw error; }
+  },
+  async deleteReview(key){
+    if(this.kind==='claude' && this.me) return this.db.doc(`reviews/${key}/by/${this.me}`).delete();
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('reviews').delete().eq('room',key).eq('uid',this.me); if(error) throw error; }
+  },
+  async listReviews(key){
+    if(this.kind==='claude'){
+      const snap=await this.db.collection(`reviews/${key}/by`).orderBy('at','desc').limit(30).get();
+      const list=snap.docs.map(d=>d.data()).filter(r=>r && typeof r.stars==='number');
+      const ns=await this.names([...new Set(list.map(r=>r.uid).filter(Boolean))]);
+      return list.map(r=>({...r, name:ns[r.uid]||''}));
+    }
+    if(this.kind==='supabase'){
+      const {data,error}=await this.sb.from('reviews').select('uid,nickname,stars,text,spoiler,updated_at').eq('room',key).order('updated_at',{ascending:false}).limit(30);
+      if(error) throw error;
+      return data.map(r=>({uid:r.uid, name:r.nickname, stars:r.stars, text:r.text, spoiler:r.spoiler, at:Date.parse(r.updated_at)}));
+    }
+    return [];
+  },
+  /* 채팅 */
+  subscribeRoom(key, onMsgs, onErr){
+    if(this.kind==='claude'){
+      return this.db.collection(`rooms/${key}/msgs`).orderBy('at','desc').limit(100).onSnapshot(snap=>{
+        onMsgs(snap.docs.map(d=>({id:d.id, ...d.data()})).filter(m=>typeof m.text==='string').reverse(), !snap.metadata.fromCache);
+      }, onErr);
+    }
+    if(this.kind==='supabase'){
+      let alive=true;
+      const load=async()=>{
+        const {data,error}=await this.sb.from('messages').select('id,uid,nickname,text,spoiler,created_at').eq('room',key).order('created_at',{ascending:false}).limit(100);
+        if(!alive) return; if(error){ onErr(error); return; }
+        onMsgs(data.map(m=>({id:m.id, uid:m.uid, name:m.nickname, text:m.text, spoiler:m.spoiler, at:Date.parse(m.created_at)})).reverse(), true);
+      };
+      load();
+      const ch=this.sb.channel('room-'+key)
+        .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`room=eq.${key}`},load)
+        .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},load)
+        .subscribe();
+      return ()=>{ alive=false; this.sb.removeChannel(ch); };
+    }
+    return ()=>{};
+  },
+  async sendMsg(key, m, w){
+    if(this.kind==='claude'){
+      await this.db.collection(`rooms/${key}/msgs`).add({uid:this.me||null, text:m.text, spoiler:m.spoiler, at:Date.now()});
+      this.db.doc(`rooms/${key}`).set({t:w.t, y:w.y, k:w.k, last:Date.now()}).catch(()=>{});
+      return;
+    }
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').insert({room:key, uid:this.me, nickname:this.nickname(), text:m.text, spoiler:m.spoiler}); if(error) throw error; }
+  },
+  async deleteMsg(key, id){
+    if(this.kind==='claude') return this.db.doc(`rooms/${key}/msgs/${id}`).delete();
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').delete().eq('id',id); if(error) throw error; }
+  }
+};
+
+/* ---------- 내 기록 (MY) ----------
+   이 브라우저에 저장하고, claude.ai에서 열었을 땐 내 계정 전용 공간(data/users/<나>/me)에도 저장해 기기를 바꿔도 남게 한다. */
+const ME = Object.assign({items:{}, liked:{}, history:[], reviews:{}, fb:{}}, store.get('ottpick-me',{}));
+(function migrate(){ const old=store.get('feedback',null); if(old){ for(const k in old) if(!ME.fb[k]) ME.fb[k]={v:old[k],at:0}; store.set('feedback',null); } })();
+function compact(w){ return {key:w.key,t:w.t,y:w.y,k:w.k,cc:w.cc||'',genres:(w.genres||[]).slice(0,4),tags:(w.tags||[]).slice(0,4),posterPath:w.posterPath||null,backdropPath:w.backdropPath||null,media:w.media||null,id:w.id||null,ott:w.ott||null,ext:w.ext||null,vc:w.vc||null}; }
+function remember(w){ if(w && w.key) ME.items[w.key]=compact(w); }
+function itemOf(k){ return ME.items[k] || S.cards[k] || DEMO.find(d=>d.key===k) || null; }
+function prune(){
+  ME.history = ME.history.sort((a,b)=>b.at-a.at).slice(0,30);
+  const fbKeys=Object.keys(ME.fb).sort((a,b)=>ME.fb[b].at-ME.fb[a].at); fbKeys.slice(400).forEach(k=>delete ME.fb[k]);
+  const used=new Set([...Object.keys(ME.liked),...Object.keys(ME.reviews),...Object.keys(ME.fb).filter(k=>ME.fb[k].v==='up'),...ME.history.flatMap(h=>[...h.recs.map(r=>r.key),...(h.liked||[])])]);
+  for(const k in ME.items) if(!used.has(k)) delete ME.items[k];
+}
+function mergeMe(o){
+  if(!o) return;
+  Object.assign(ME.items, o.items||{}, ME.items);
+  for(const part of ['liked','reviews','fb']) for(const [k,v] of Object.entries(o[part]||{})) if(!ME[part][k] || (v.at||0)>(ME[part][k].at||0)) ME[part][k]=v;
+  const seen=new Set(ME.history.map(h=>h.at)); (o.history||[]).forEach(h=>{ if(!seen.has(h.at)) ME.history.push(h); });
+  ME.deleted = Math.max(ME.deleted||0, o.deleted||0);
+}
+let saveT=null, saving=false, again=false;
+function persist(){ prune(); store.set('ottpick-me',ME); clearTimeout(saveT); saveT=setTimeout(flush,800); }
+async function flush(){
+  if(Social.kind==='none') return;
+  if(saving){ again=true; return; }
+  saving=true;
+  try{ await Social.saveState(JSON.parse(JSON.stringify(ME))); }catch(e){}
+  saving=false; if(again){ again=false; flush(); }
+}
+Social.init().then(async()=>{
+  if(Social.kind==='none') return;
+  try{
+    const o=await Social.loadState();
+    if(o){ mergeMe(o); prune(); store.set('ottpick-me',ME); }
+    flush();
+    if(S.view==='my') renderMy();
+  }catch(e){}
+});
+const fbOf = k => (ME.fb[k]||{}).v;
+function setFb(w,v){ remember(w); if(v==null) delete ME.fb[w.key]; else ME.fb[w.key]={v,at:Date.now()}; persist(); }
+
+/* ---------- 표지 ---------- */
+const PAL=[
+  ['#0e2d36','#05121a','#e8f1ef','#f2b134'], ['#3d0e14','#0f0406','#f6e9e3','#e3483b'],
+  ['#f4d2c4','#d9806f','#2b1412','#fff6ec'], ['#17427f','#09193a','#f2f4ff','#86d4ff'],
+  ['#244633','#0d1c14','#eaf2e3','#e6cd84'], ['#f6ca4c','#e0841a','#1d1405','#fffaf0'],
+  ['#45216a','#150927','#f3ecff','#ff8fd9'], ['#efe6d6','#d3c3a6','#1e1a16','#c63d23'],
+  ['#ff6f5c','#a2253b','#fff4ee','#ffd76e'], ['#2e333b','#101216','#f0eee9','#9fe5c6']
+];
+const GPAL={'스릴러':[0,9,1],'범죄':[9,0,1],'미스터리':[0,6,9],'호러':[1,9],'로맨스':[2,6,8],'SF':[3,6,0],'판타지':[6,4,3],
+  '가족':[5,7,4],'힐링':[7,4,2],'코미디':[5,7,8],'액션':[3,1,9],'드라마':[7,4,9,0],'모험':[4,3,5]};
+function palOf(w){ const g=(w.genres||[]).find(x=>GPAL[x]); const opts=g?GPAL[g]:[0,1,2,3,4,5,6,7,8,9]; return PAL[opts[hashN(w.t)%opts.length]]; }
+function cover(w, imgSize='w342'){
+  const [a,b,ink,acc]=palOf(w), v=hashN(w.t+'*')%4;
+  const serif=w.k!=='애니' && ['드라마','로맨스','스릴러','미스터리','범죄'].includes((w.genres||[])[0]);
+  const L=[...w.t].length, fs=L<=3?19:L<=5?15:L<=8?12:L<=12?9.6:8;
+  const kind=w.k==='영화'?'FILM':w.k==='드라마'?'SERIES':'ANIMATION';
+  const img=w.posterPath?`<img src="${IMGB}${imgSize}${esc(w.posterPath)}" alt="" loading="lazy" onerror="this.remove()">`:'';
+  return `<div class="cv v${v}${serif?' serif':''}" style="--a:${a};--b:${b};--ink:${ink};--acc:${acc};--fs:${fs}cqw">
+    <i class="shape"></i><i class="grain"></i>
+    <div class="top"><span>${esc(w.y)}</span>${w.k==='애니'?`<b>${flag(w.cc)}</b>`:''}</div>
+    <div class="ti">${esc(w.t)}</div><div class="kd">${kind}</div>${img}</div>`;
+}
+function heroBg(w){
+  if(w.backdropPath) return `url('${IMGB}w780${w.backdropPath}')`;
+  if(w.posterPath) return `url('${IMGB}w342${w.posterPath}')`;
+  const [a,b,,acc]=palOf(w);
+  return `radial-gradient(circle at 25% 30%,${acc},transparent 55%),linear-gradient(135deg,${a},${b})`;
+}
+
+/* ---------- 질문 1 ---------- */
+let searchTimer;
+async function loadTitles(){
+  const q=$('#q').value.trim();
+  if(MODE==='demo'){
+    const n=q.replace(/\s/g,'');
+    S.shown = DEMO.filter(w=>!n||w.t.replace(/\s/g,'').includes(n)).slice(0,q?24:18);
+    return drawTitles(q ? '검색 결과가 없어요. 데모에는 42개 작품만 있어요.' : '');
+  }
+  if(!q && S.trend){ S.shown=S.trend; return drawTitles(); }
+  $('#titleGrid').innerHTML='<p class="hint">불러오는 중…</p>';
+  try{
+    const list = q ? await LiveEngine.search(q) : (S.trend = (await LiveEngine.trending()).slice(0,18));
+    if($('#q').value.trim()!==q) return;
+    S.shown = list.slice(0,21);
+    drawTitles('검색 결과가 없어요.');
+  }catch(e){ $('#titleGrid').innerHTML=`<p class="hint">${esc(errMsg(e))}</p>`; }
+}
+function drawTitles(emptyMsg=''){
+  const has=k=>S.liked.some(l=>l.key===k);
+  const head = MODE==='live' && !$('#q').value.trim() ? '<div class="label" style="margin-top:0">이번 주 인기작</div>' : '';
+  $('#titleGrid').innerHTML = S.shown.length
+    ? head+'<div class="grid">'+S.shown.map(w=>`<button class="tile ${has(w.key)?'on':''}" data-key="${w.key}">${cover(w)}<span class="ck">✓</span><span class="tt">${esc(w.t)}</span><span class="ty">${esc(w.y)} · ${esc(kindLabel(w))}</span></button>`).join('')+'</div>'
+    : `<p class="hint">${esc(emptyMsg)}</p>`;
+  $('#picked').innerHTML = S.liked.length
+    ? S.liked.map(w=>`<button class="pk" data-key="${w.key}" aria-label="${esc(w.t)} 빼기">${cover(w,'w154')}<span class="x">✕</span></button>`).join('')+`<span class="cnt">${S.liked.length} / 3</span>`
+    : '<span class="empty">아직 고른 작품이 없어요. 아래 표지를 눌러주세요</span>';
+}
+function toggleLiked(key){
+  const i=S.liked.findIndex(l=>l.key===key);
+  if(i>=0) S.liked.splice(i,1);
+  else { if(S.liked.length>=3){toast('최대 3개까지 고를 수 있어요');return} const w=S.shown.find(x=>x.key===key); if(w) S.liked.push(w); }
+  drawTitles(); syncBar();
+}
+$('#titleGrid').onclick=e=>{const b=e.target.closest('[data-key]');if(b)toggleLiked(b.dataset.key)};
+$('#picked').onclick=e=>{const b=e.target.closest('[data-key]');if(b)toggleLiked(b.dataset.key)};
+$('#q').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(loadTitles, MODE==='live'?350:0)};
+
+/* ---------- 질문 2 ---------- */
+function renderGenres(){
+  $('#typeChips').innerHTML=['영화','드라마','애니'].map(k=>`<button class="chip ${S.kinds.includes(k)?'on':''}" data-k="${k}">${KIND_EMO[k]} ${k}</button>`).join('');
+  $('#genreChips').innerHTML=GENRES.map(g=>`<button class="chip ${S.genres.includes(g)?'on':''}" data-g="${g}">${g}</button>`).join('');
+}
+$('#typeChips').onclick=e=>{const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k;S.kinds=S.kinds.includes(k)?S.kinds.filter(x=>x!==k):[...S.kinds,k];renderGenres()};
+$('#genreChips').onclick=e=>{const b=e.target.closest('[data-g]');if(!b)return;const g=b.dataset.g;S.genres=S.genres.includes(g)?S.genres.filter(x=>x!==g):[...S.genres,g];renderGenres()};
+
+/* ---------- 구독 OTT (질문 3 + 설정) ---------- */
+function renderOtts(){
+  const html=Object.entries(OTTS).map(([k,o])=>`<button class="ott ${S.otts.includes(k)?'on':''}" data-o="${k}"><span class="dot" style="background:${o.color}">${o.short}</span>${o.name}<span class="ck">${S.otts.includes(k)?'✓':''}</span></button>`).join('');
+  $$('[data-otts]').forEach(g=>g.innerHTML=html);
+}
+$$('[data-otts]').forEach(g=>g.onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;const k=b.dataset.o;S.otts=S.otts.includes(k)?S.otts.filter(x=>x!==k):[...S.otts,k];store.set('myOtts',S.otts);renderOtts();syncBar()});
+
+/* ---------- 결과 ---------- */
+function why(r){
+  const w=r.w, bits=[];
+  if(r.viaRec && r.from) bits.push(`<b>「${esc(r.from.t)}」</b>를 좋아한 사람들이 많이 본 작품이에요.`);
+  else if(r.from && r.shared.length) bits.push(`재밌게 보신 <b>「${esc(r.from.t)}」</b>처럼 <b>${r.shared.slice(0,2).map(esc).join('·')}</b> 매력이 있어요.`);
+  if(r.matched.length) bits.push(`지금 원하신 <b>${r.matched.map(esc).join('·')}</b> 분위기에 맞아요.`);
+  if(w.app!=null && w.app>=4.7) bits.push(`앱 유저 평점이 <b>${w.app}</b>로 만족도 최상위권이에요.`);
+  else if(w.ext>=8.3) bits.push(`외부 평점도 <b>${w.ext}</b>로 검증됐어요.`);
+  if(!bits.length) bits.push('평점과 취향을 종합했을 때 지금 보기 좋은 작품이에요.');
+  return bits.slice(0,2).join(' ');
+}
+function fmtN(n){ return n>=10000 ? (Math.round(n/1000)/10)+'만' : (n||0).toLocaleString(); }
+function ottTags(w){ return (w.ott||[]).map(o=>{const m=S.otts.includes(o);return `<span class="tag ${m?'mine':''}" style="${m?'background:'+OTTS[o].color:''}">${m?'✓ ':''}${OTTS[o].name}</span>`}).join(''); }
+function fbButtons(w){
+  const v=fbOf(w.key), rv=ME.reviews[w.key];
+  return `<div class="fb" data-key="${w.key}"><button data-fb="up" class="${v==='up'?'done':''}">👍 볼래요</button><button data-fb="seen" class="${v==='seen'||rv?'done':''}">${rv?'★'+rv.stars+' 후기':'✍️ 봤어요'}</button><button data-fb="down" class="${v==='down'?'done':''}">👎 별로</button></div>`;
+}
+function card(r,i,out){
+  const w=r.w; S.cards[w.key]=w;
+  const p=r.parts, bar=(l,v)=>`<div>${l}<b><i style="width:${v==null?0:Math.round(v*100)}%"></i></b>${v==null?'—':Math.round(v*100)}</div>`;
+  const genres=(w.genres||[]).filter(g=>g!=='애니').slice(0,3).map(esc).join(' / ');
+  const info = w.c
+    ? `💬 <em>"${esc(w.c)}"</em><br>앱 평점 ★ ${w.app} (${w.n.toLocaleString()}명) · 외부 평점 ${w.ext}`
+    : `${w.overview?`<span class="ov">${esc(w.overview)}</span>`:''}TMDB 평점 ★ ${w.ext} (${fmtN(w.vc)}명) · 앱 평점은 아직 없어요`;
+  return `<article class="card ${out?'out':''}" style="animation-delay:${i*.08}s">
+    <div class="hero" style="--hbg:${heroBg(w).replace(/"/g,'&quot;')}"><i class="bgx"></i>
+      ${cover(w,'w342')}
+      <div class="ht"><span class="rank">${out?'🔥 구독 밖 강추':'#'+(i+1)}</span>
+        <h3>${esc(w.t)}</h3><div class="meta">${esc(kindLabel(w))} · ${esc(w.y)}${genres?' · '+genres:''}</div>
+        <div class="num">${r.total}<small>점</small></div></div>
+    </div>
+    <div class="body">
+      <div class="mini">${bar('취향 일치',p.taste)}${bar('장르 일치',p.genre)}${bar('외부 평점',p.ext)}${bar('유저 평점',p.app)}</div>
+      <div class="why">${why(r)}</div>
+      ${out?`<div class="sub-note">구독 중인 OTT엔 없지만, <b>${esc(w.ott.map(o=>OTTS[o].name).join(' 또는 '))}</b> 한 달만 구독해도 아깝지 않을 작품이에요.</div>`:''}
+      <div class="cmt">${info}</div>
+      <div class="where">${ottTags(w)}${w.link?`<a href="${esc(w.link)}" target="_blank" rel="noopener">보러 가기 ↗</a>`:''}</div>
+      <button class="chatbtn" data-chat="${w.key}"><span class="ic">💬</span><span><b>「${esc(w.t)}」 채팅방</b><small>본 사람들과 이야기 나누기 · 스포는 가려져요</small></span><span class="go">›</span></button>
+      ${fbButtons(w)}
+    </div></article>`;
+}
+function recordSession(mine,outside){
+  const recs=[...mine.map(r=>({key:r.w.key,total:r.total,out:false})),...outside.map(r=>({key:r.w.key,total:r.total,out:true}))];
+  [...mine,...outside].forEach(r=>remember(r.w));
+  if(!S.sessAt){
+    S.sessAt=Date.now();
+    S.liked.forEach(w=>{ remember(w); const o=ME.liked[w.key]||{n:0}; ME.liked[w.key]={n:o.n+1,at:S.sessAt}; });
+    ME.history.unshift({at:S.sessAt, liked:S.liked.map(w=>w.key), genres:[...S.genres], kinds:[...S.kinds], otts:[...S.otts], mode:MODE, recs});
+  }else{
+    const h=ME.history.find(x=>x.at===S.sessAt);
+    if(h) recs.forEach(r=>{ if(!h.recs.some(x=>x.key===r.key)) h.recs.push(r); });
+  }
+  persist();
+}
+async function renderResult(){
+  const el=$('#result'), token=++S.req;
+  el.innerHTML=`<div class="loading"><div class="spin"></div><p>취향 분석 중…</p><small>${MODE==='live'?'TMDB에서 작품과 한국 OTT 편성을 확인하고 있어요':''}</small></div>`;
+  syncBar(true);
+  const skip=new Set([...S.seen, ...Object.keys(ME.fb).filter(k=>ME.fb[k].v!=='up'), ...Object.keys(ME.reviews)]);
+  let res;
+  try{ res = await Engine().recommend(S.liked,S.genres,S.kinds,S.otts,S.thr,skip); }
+  catch(e){ if(token===S.req){ el.innerHTML=`<div class="none">${esc(errMsg(e))}</div>`; syncBar(); } return; }
+  if(token!==S.req) return;
+  const {mine,outside}=res;
+  recordSession(mine,outside);
+  const myNames=S.otts.map(o=>OTTS[o].name).join(', ');
+  let html=`<div class="res-head"><div class="q-no">${S.round?'새로운 추천':'분석 완료'}</div><h2>지금 당장 볼 작품<br><span>딱 ${mine.length}개</span> 골랐어요</h2><p class="hint">${esc(myNames)}에서 바로 볼 수 있어요</p></div>`;
+  html += mine.length ? mine.map((r,i)=>card(r,i,false)).join('') : '<div class="none">구독 중인 OTT에서 조건에 맞는 작품을 못 찾았어요. 장르를 조금 넓혀보세요.</div>';
+  html += `<div class="sep">🔥 구독 밖이지만 강력 추천</div><p class="sep-sub">종합 점수가 ${S.thr}점 이상이면 구독하지 않은 OTT 작품도 알려드려요. 기준은 설정에서 바꿀 수 있어요.</p>`;
+  html += outside.length ? outside.map((r,i)=>card(r,i,true)).join('') : `<div class="none">${S.thr}점을 넘는 구독 밖 작품이 없어요. 지금 구독으로 충분해요! 👍</div>`;
+  html += MODE==='demo'
+    ? `<p class="demo">데모 데이터 · 작품 42개와 평점, 코멘트, OTT 정보는 예시예요. 표지는 오티티픽이 그린 디자인 표지예요.<br>설정에서 TMDB 키를 연결하면 공식 포스터와 오늘의 OTT 편성으로 추천해요.</p>`
+    : `<p class="demo">작품·평점·포스터: TMDB · OTT 정보: JustWatch<br>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>`;
+  el.innerHTML=html;
+  S.last=[...mine,...outside].map(r=>r.w.key);
+  S.last.forEach(k=>S.seen.add(k));
+  syncBar();
+}
+function refreshFb(key){
+  $$(`.fb[data-key="${CSS.escape(key)}"]`).forEach(el=>{ const w=itemOf(key); if(w) el.outerHTML=fbButtons(w); });
+}
+function onFb(key, v){
+  const w=itemOf(key); if(!w) return;
+  if(v==='seen'){ openReview(w); return; }
+  if(fbOf(key)===v){ setFb(w,null); }
+  else { setFb(w,v); toast({up:'MY > 볼래요에 담았어요',down:'다음 추천부터 빼둘게요'}[v]); }
+  refreshFb(key);
+}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-chat]'); if(c){ openChat(itemOf(c.dataset.chat)); return; }
+  const b=e.target.closest('.fb [data-fb]'); if(b){ onFb(b.parentNode.dataset.key, b.dataset.fb); return; }
+  const o=e.target.closest('[data-open]'); if(o){ openDetail(itemOf(o.dataset.open)); return; }
+  const x=e.target.closest('[data-close]'); if(x){ $('#'+x.dataset.close).classList.remove('on'); return; }
+  const sp=e.target.closest('p.sp'); if(sp){ sp.classList.remove('sp'); return; }
+});
+$$('.sheet-bg').forEach(bg=>bg.addEventListener('click',e=>{ if(e.target===bg){ bg.classList.remove('on'); if(bg.id==='chatBg') closeChat(); } }));
+
+/* ---------- 후기 ---------- */
+const RV={w:null, stars:0, sp:false};
+function drawStars(){
+  $('#starIn').innerHTML=[1,2,3,4,5].map(n=>`<button data-star="${n}" class="${n<=RV.stars?'on':''}" aria-label="${n}점">★</button>`).join('');
+  $('#starLb').textContent = RV.stars ? STAR_LB[RV.stars] : '별점을 눌러주세요';
+  $('#rvSave').disabled=!RV.stars; $('#rvSave').style.opacity=RV.stars?1:.4;
+}
+function openReview(w){
+  const old=ME.reviews[w.key];
+  RV.w=w; RV.stars=old?old.stars:0; RV.sp=old?!!old.spoiler:false;
+  $('#rvTitle').textContent=`「${w.t}」 어땠어요?`;
+  $('#rvText').value=old?old.text:''; $('#rvCnt').textContent=$('#rvText').value.length+' / 200';
+  $('#rvSp').classList.toggle('on',RV.sp);
+  $('#rvDel').style.display=old?'':'none';
+  drawStars();
+  $('#rvBg').classList.add('on');
+}
+$('#starIn').onclick=e=>{const b=e.target.closest('[data-star]');if(!b)return;RV.stars=+b.dataset.star;drawStars()};
+$('#rvText').oninput=()=>$('#rvCnt').textContent=$('#rvText').value.length+' / 200';
+$('#rvSp').onclick=()=>{RV.sp=!RV.sp;$('#rvSp').classList.toggle('on',RV.sp)};
+$('#rvSave').onclick=async()=>{
+  if(!RV.stars) return;
+  const w=RV.w, at=Date.now(), text=$('#rvText').value.trim().slice(0,200);
+  remember(w); ME.reviews[w.key]={stars:RV.stars,text,spoiler:RV.sp,at}; ME.fb[w.key]={v:'seen',at}; persist();
+  $('#rvBg').classList.remove('on'); toast('후기를 남겼어요. MY에서 볼 수 있어요');
+  refreshFb(w.key); if(S.view==='my') renderMy(); if($('#dtBg').classList.contains('on')) openDetail(w);
+  await Social.init();
+  Social.saveReview(w.key,{stars:RV.stars,text,spoiler:RV.sp,at,t:w.t}).catch(()=>toast('후기를 서버에 올리지 못했어요. MY에는 저장됐어요'));
+};
+$('#rvDel').onclick=async()=>{
+  const w=RV.w; delete ME.reviews[w.key]; if(fbOf(w.key)==='seen') delete ME.fb[w.key]; persist();
+  $('#rvBg').classList.remove('on'); toast('후기를 지웠어요');
+  refreshFb(w.key); if(S.view==='my') renderMy(); if($('#dtBg').classList.contains('on')) openDetail(w);
+  await Social.init(); Social.deleteReview(w.key).catch(()=>{});
+};
+
+/* ---------- 작품 상세 ---------- */
+async function openDetail(w){
+  if(!w) return;
+  const v=fbOf(w.key), mine=ME.reviews[w.key];
+  const genres=(w.genres||[]).filter(g=>g!=='애니').slice(0,3).map(esc).join(' / ');
+  $('#dtBody').innerHTML=`<button class="x-btn" data-close="dtBg">✕</button>
+    <div class="dt-top">${cover(w,'w342')}<div><h3>${esc(w.t)}</h3><div class="meta">${esc(kindLabel(w))} · ${esc(w.y)}${genres?' · '+genres:''}</div><div class="where" style="margin:0">${ottTags(w)}</div></div></div>
+    <div class="dt-act"><button data-dt="up" class="${v==='up'?'done':''}">👍 볼래요</button><button data-dt="review" class="${mine?'done':''}">${mine?'✍️ 후기 수정':'✍️ 후기 쓰기'}</button><button data-chat="${w.key}">💬 채팅방</button></div>
+    ${mine?`<div class="label" style="margin-top:0">내 후기</div><div class="rv" style="margin-bottom:6px"><div class="tx">${starsHTML(mine.stars)}<p class="${mine.spoiler?'sp':''}">${esc(mine.text||'(별점만 남겼어요)')}</p><small>${fmtDate(mine.at)}</small></div></div>`:''}
+    <div class="label">오티티픽 사람들의 후기</div><div id="dtOthers"><p class="hint">불러오는 중…</p></div>`;
+  remember(w); S.cards[w.key]=w;
+  $('#dtBg').classList.add('on');
+  await Social.init();
+  const box=$('#dtOthers'); if(!box) return;
+  if(Social.kind==='none'){ box.innerHTML='<p class="hint">다른 사람들의 후기는 곧 볼 수 있어요.</p>'; return; }
+  try{
+    const list=await Social.listReviews(w.key);
+    if(!list.length){ box.innerHTML='<p class="hint">아직 후기가 없어요. 첫 후기를 남겨보세요!</p>'; return; }
+    const avg=list.reduce((s,r)=>s+r.stars,0)/list.length;
+    box.innerHTML=`<div class="avg"><b>★ ${avg.toFixed(1)}</b><span class="hint" style="margin:0">${list.length}명의 평가</span></div>`+
+      list.map(r=>`<div class="ob"><div class="who"><span>${esc(r.uid===Social.me?'나':(r.name||'익명'))} · ${starsHTML(r.stars)}</span><span>${fmtDate(r.at)}</span></div>${r.text?`<p class="${r.spoiler?'sp':''}">${r.spoiler?'🙈 ':''}${esc(r.text)}</p>`:''}</div>`).join('');
+  }catch(e){ box.innerHTML='<p class="hint">후기를 불러오지 못했어요.</p>'; }
+}
+$('#dtBody').addEventListener('click',e=>{
+  const b=e.target.closest('[data-dt]'); if(!b) return;
+  const w=S.cards[$('#dtBody').querySelector('[data-chat]').dataset.chat] || null; if(!w) return;
+  if(b.dataset.dt==='up'){ const on=fbOf(w.key)==='up'; setFb(w,on?null:'up'); b.classList.toggle('done',!on); toast(on?'볼래요에서 뺐어요':'MY > 볼래요에 담았어요'); refreshFb(w.key); if(S.view==='my') renderMy(); }
+  else if(b.dataset.dt==='review') openReview(w);
+});
+
+/* ---------- MY ---------- */
+function hItem(k, badge, cls=''){
+  const w=itemOf(k); if(!w) return '';
+  return `<button class="hi" data-open="${w.key}"><div class="cvw">${cover(w,'w185')}${badge?`<span class="badge ${cls}">${badge}</span>`:''}</div><span class="tt">${esc(w.t)}</span><span class="ty">${esc(w.y)} · ${esc(kindLabel(w))}</span></button>`;
+}
+function renderMy(){
+  const wants=Object.entries(ME.fb).filter(([,v])=>v.v==='up').sort((a,b)=>b[1].at-a[1].at).map(([k])=>k).filter(itemOf);
+  const reviews=Object.entries(ME.reviews).sort((a,b)=>b[1].at-a[1].at).filter(([k])=>itemOf(k));
+  const liked=Object.entries(ME.liked).sort((a,b)=>b[1].n-a[1].n||b[1].at-a[1].at).map(([k,v])=>[k,v.n]).filter(([k])=>itemOf(k));
+  const recKeys=new Set(ME.history.flatMap(h=>h.recs.map(r=>r.key)));
+  // 취향 키워드: 고른 작품과 높게 평가한 작품의 장르·태그
+  const cnt={};
+  liked.forEach(([k,n])=>{ const w=itemOf(k); [...(w.genres||[]),...(w.tags||[])].forEach(g=>{ if(g!=='애니') cnt[g]=(cnt[g]||0)+n; }); });
+  reviews.forEach(([k,r])=>{ if(r.stars>=4){ const w=itemOf(k); [...(w.genres||[]),...(w.tags||[])].forEach(g=>{ if(g!=='애니') cnt[g]=(cnt[g]||0)+1; }); } });
+  const kw=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,7).map(([g])=>g);
+  const empty=(t)=>`<div class="empty-box">${t}</div>`;
+  let h=`<div class="my-h"><div class="avatar">MY</div><div><h2>내 기록</h2><p>추천받고, 담고, 남긴 모든 것</p></div></div>
+    <div class="stats"><div class="stat"><b>${recKeys.size}</b><span>추천받은 작품</span></div><div class="stat"><b>${wants.length}</b><span>볼래요</span></div><div class="stat"><b>${liked.length}</b><span>취향작</span></div><div class="stat"><b>${reviews.length}</b><span>후기</span></div></div>`;
+  if(kw.length) h+=`<div class="taste"><div class="lb">내 취향 키워드</div><div class="kw">${kw.map(g=>`<span>#${esc(g)}</span>`).join('')}</div></div>`;
+  h+=`<div class="sec"><div class="sec-h"><h3>👍 볼래요</h3><span>${wants.length}</span></div>${wants.length?`<div class="hs">${wants.map(k=>hItem(k)).join('')}</div>`:empty('추천 카드에서 👍 볼래요를 누르면 여기에 모여요')}</div>`;
+  h+=`<div class="sec"><div class="sec-h"><h3>✍️ 내 후기</h3><span>${reviews.length}</span></div>${reviews.length?reviews.slice(0,10).map(([k,r])=>{const w=itemOf(k);return `<button class="rv" data-open="${k}">${cover(w,'w154')}<div class="tx"><b>${esc(w.t)}</b>${starsHTML(r.stars)}<p class="${r.spoiler?'sp':''}">${esc(r.text||'(별점만 남겼어요)')}</p><small>${fmtDate(r.at)}</small></div></button>`}).join(''):empty('추천 카드에서 ✍️ 봤어요를 누르고 별점을 남겨보세요')}</div>`;
+  h+=`<div class="sec"><div class="sec-h"><h3>🕘 추천 기록</h3><span>${ME.history.length}회</span></div>${ME.history.length?ME.history.slice(0,8).map(s=>{
+      const src=(s.liked||[]).map(itemOf).filter(Boolean).map(w=>`「${esc(w.t)}」`).join(' ');
+      const tags=[...(s.genres||[]),...(s.kinds||[])].join(' · ')||'전체 장르';
+      const otts=(s.otts||[]).map(o=>OTTS[o]?OTTS[o].name:o).join(', ');
+      return `<div class="sess"><div class="sess-h"><b>${fmtDate(s.at)}</b><span>${esc(tags)}</span></div><div class="sess-src">${src?src+' 좋아해서 · ':''}${esc(otts)}</div><div class="hs">${s.recs.map(r=>hItem(r.key, r.out?'🔥'+r.total:r.total+'점', r.out?'hot':'')).join('')}</div></div>`;
+    }).join(''):empty('아직 추천받은 기록이 없어요. 추천 탭에서 시작해보세요')}</div>`;
+  h+=`<div class="sec"><div class="sec-h"><h3>❤️ 처음에 고른 취향작</h3><span>${liked.length}</span></div>${liked.length?`<div class="hs">${liked.map(([k,n])=>hItem(k, n>1?'×'+n:'', 'acc')).join('')}</div>`:empty('질문 1에서 고른 작품이 여기에 쌓여요')}</div>`;
+  $('#viewMy').innerHTML=h;
+}
+
+/* ---------- 작품 채팅방 ---------- */
+const CHAT = {unsub:null, room:null, w:null, names:{}, spoiler:false, msgs:[], timer:null, sending:false};
+function relTime(t){
+  const d=(Date.now()-t)/1000;
+  if(d<60) return '방금'; if(d<3600) return Math.floor(d/60)+'분 전'; if(d<86400) return Math.floor(d/3600)+'시간 전';
+  const dt=new Date(t); return (dt.getMonth()+1)+'/'+dt.getDate();
+}
+function chatFoot(t){ $('#chatFoot').textContent=t||''; }
+function setChatInput(on, ph){ ['#chatIn','#sendBtn','#spBtn'].forEach(s=>$(s).disabled=!on); if(ph) $('#chatIn').placeholder=ph; }
+async function openChat(w){
+  if(!w) return;
+  closeChat(true);
+  CHAT.w=w; CHAT.room=w.key; CHAT.msgs=[];
+  $('#chatHead').innerHTML=`${cover(w,'w154')}<div><b>「${esc(w.t)}」 채팅방</b><small>${esc(kindLabel(w))} · ${esc(w.y)}</small></div><button class="x" id="chatX" aria-label="닫기">✕</button>`;
+  $('#chatX').onclick=()=>closeChat();
+  $('#msgs').innerHTML='<div class="sys">채팅방에 들어가는 중…</div>';
+  chatFoot(''); setChatInput(false,'이 작품 어땠어요?');
+  $('#chatBg').classList.add('on');
+  await Social.init();
+  if(CHAT.w!==w) return;
+  if(Social.kind==='none'){ $('#msgs').innerHTML='<div class="sys">💬 작품별 채팅방은 곧 열려요!<br>지금은 준비 중이에요.</div>'; return; }
+  if(Social.canWrite===false) setChatInput(false,'읽기만 할 수 있어요'); else setChatInput(true, Social.kind==='supabase' ? `${Social.nickname()}(으)로 대화해요` : '이 작품 어땠어요?');
+  CHAT.timer=setTimeout(()=>{ if(CHAT.w===w && !CHAT.msgs.length) $('#msgs').innerHTML='<div class="sys">채팅을 아직 불러오지 못했어요. 연결이 느린 것 같아요.</div>'; },10000);
+  CHAT.unsub = Social.subscribeRoom(w.key, (msgs, fresh)=>{
+    if(CHAT.w!==w) return;
+    if(fresh) clearTimeout(CHAT.timer);
+    CHAT.msgs = msgs; drawMsgs(true);
+  }, ()=>{ clearTimeout(CHAT.timer); if(CHAT.w===w) $('#msgs').innerHTML='<div class="sys">채팅을 불러올 수 없어요.</div>'; });
+}
+async function drawMsgs(scroll){
+  const box=$('#msgs');
+  const atBottom = box.scrollHeight-box.scrollTop-box.clientHeight < 80;
+  if(!CHAT.msgs.length){ box.innerHTML=`<div class="sys">아직 아무도 이야기하지 않았어요.<br>「${esc(CHAT.w.t)}」 첫 감상을 남겨보세요! ✍️</div>`; return; }
+  const ids=[...new Set(CHAT.msgs.filter(m=>!m.name).map(m=>m.uid).filter(Boolean))].filter(id=>!(id in CHAT.names));
+  if(ids.length){ const ns=await Social.names(ids); ids.forEach(id=>CHAT.names[id]=ns[id]||''); }
+  box.innerHTML = CHAT.msgs.map(m=>{
+    const me = Social.me && m.uid===Social.me, canDel = me || Social.isOwner;
+    return `<div class="msg ${me?'me':''}">${me?'':`<div class="who">${esc(m.name||CHAT.names[m.uid]||'익명')}</div>`}
+      ${m.spoiler?'<div class="spl">🙈 스포일러 · 눌러서 보기</div>':''}
+      <div class="bub ${m.spoiler?'sp':''}">${esc(m.text)}</div>
+      <div class="tm">${relTime(m.at||0)}${canDel?`<button data-del="${esc(m.id)}">삭제</button>`:''}</div></div>`;
+  }).join('');
+  if(scroll && (atBottom || box._first!==CHAT.room)){ box.scrollTop=box.scrollHeight; box._first=CHAT.room; }
+}
+function closeChat(silent){
+  if(CHAT.unsub){ try{CHAT.unsub()}catch(e){} CHAT.unsub=null; }
+  clearTimeout(CHAT.timer); CHAT.w=null;
+  if(!silent) $('#chatBg').classList.remove('on');
+}
+$('#msgs').onclick=async e=>{
+  const sp=e.target.closest('.bub.sp'); if(sp){ sp.classList.remove('sp'); return; }
+  const d=e.target.closest('[data-del]'); if(!d || Social.kind==='none' || !CHAT.room) return;
+  try{ await Social.deleteMsg(CHAT.room, d.dataset.del); }catch(err){ toast('삭제하지 못했어요'); }
+};
+$('#spBtn').onclick=()=>{ CHAT.spoiler=!CHAT.spoiler; $('#spBtn').classList.toggle('on',CHAT.spoiler); };
+$('#chatForm').onsubmit=async e=>{
+  e.preventDefault();
+  const text=$('#chatIn').value.trim();
+  if(!text || Social.kind==='none' || !CHAT.w || CHAT.sending) return;
+  CHAT.sending=true; $('#sendBtn').disabled=true;
+  const w=CHAT.w;
+  try{
+    await Social.sendMsg(w.key, {text:text.slice(0,300), spoiler:CHAT.spoiler}, w);
+    $('#chatIn').value=''; CHAT.spoiler=false; $('#spBtn').classList.remove('on'); chatFoot('');
+  }catch(err){
+    const code=err&&err.code;
+    if(code==='invalid_argument'){ setChatInput(false,'읽기만 할 수 있어요'); chatFoot('이 공유 링크에서는 메시지를 쓸 권한이 없어요.'); }
+    else if(code==='quota_exceeded') chatFoot('채팅 저장 공간이 가득 찼어요. 오래된 메시지를 정리해야 해요.');
+    else chatFoot('전송하지 못했어요. 잠시 후 다시 시도해주세요.');
+  }finally{ CHAT.sending=false; if(!$('#chatIn').disabled) $('#sendBtn').disabled=false; }
+};
+
+/* ---------- 이동 · 탭 ---------- */
+function syncBar(busy){
+  const n=$('#nextBtn');
+  $('#ctaBar').classList.toggle('hide', S.view!=='rec');
+  n.disabled = !!busy || (S.step===0&&!S.liked.length) || (S.step===2&&!S.otts.length);
+  n.textContent = S.step===2?'딱 3개 추천받기':S.step===3?'다른 작품 추천받기':'다음';
+  $('#backBtn').style.display=S.step?'':'none';
+  $$('.progress i').forEach((x,i)=>x.classList.toggle('on',i<=S.step));
+}
+function go(n){
+  S.step=n;
+  $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
+  if(n===3){S.seen=new Set();S.round=0;S.sessAt=null;renderResult()}
+  syncBar(n===3);scrollTo({top:0,behavior:'smooth'});
+}
+function tab(name){
+  if(S.view===name && name==='rec' && S.step===3){ scrollTo({top:0,behavior:'smooth'}); return; }
+  S.view=name;
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  $('#viewRec').classList.toggle('on',name==='rec'); $('#viewMy').classList.toggle('on',name==='my'); $('#viewSet').classList.toggle('on',name==='set');
+  if(name==='my') renderMy();
+  if(name==='set') renderSettings();
+  syncBar(); scrollTo({top:0});
+}
+$$('.tab').forEach(t=>t.onclick=()=>tab(t.dataset.tab));
+$('#modeBadge').onclick=()=>tab('set');
+$('#nextBtn').onclick=()=>{ if(S.step<3) go(S.step+1); else {S.round++;renderResult();scrollTo({top:0,behavior:'smooth'})} };
+$('#backBtn').onclick=()=>go(Math.max(0,S.step-1));
+
+/* ---------- 설정 ---------- */
+function renderSettings(){
+  $('#keyIn').value=store.get('tmdbKey','')||'';
+  const p=$('#setPill'); p.textContent=MODE!=='live'?'데모':LiveEngine.proxy?'오티티픽 서버 연결됨':'내 TMDB 키로 연결됨'; p.classList.toggle('ok',MODE==='live');
+  $('#demoBtn').textContent = SUPABASE.url ? '기본 연결로' : '데모로 보기';
+  $('#nickSec').style.display = Social.kind==='supabase' ? '' : 'none';
+  if(Social.kind==='supabase') $('#nickIn').value=Social.nickname();
+  $('#setThr').value=S.thr; $('#setThrV').textContent=S.thr+'점 이상';
+  renderOtts();
+  $('#wipeBtn').textContent='기록 모두 지우기'; $('#wipeBtn').dataset.arm='';
+}
+$('#setThr').oninput=e=>{S.thr=+e.target.value;$('#setThrV').textContent=S.thr+'점 이상';store.set('thr',S.thr)};
+$('#wipeBtn').onclick=()=>{
+  const b=$('#wipeBtn');
+  if(!b.dataset.arm){ b.dataset.arm='1'; b.textContent='한 번 더 누르면 모두 지워져요'; setTimeout(()=>{ if(b.dataset.arm){ b.dataset.arm=''; b.textContent='기록 모두 지우기'; } },4000); return; }
+  b.dataset.arm=''; ME.items={}; ME.liked={}; ME.history=[]; ME.reviews={}; ME.fb={}; persist(); b.textContent='기록 모두 지우기'; toast('기록을 모두 지웠어요');
+};
+function setMode(m){
+  MODE=m;
+  const b=$('#modeBadge'); b.textContent = m!=='live'?'데모 데이터':LiveEngine.proxy?'실시간':'TMDB 실시간'; b.classList.toggle('live', m==='live');
+  S.liked=[]; S.trend=null; S.shown=[]; $('#q').value='';
+  go(0); loadTitles(); if(S.view==='set') renderSettings();
+}
+function status(msg,cls){const s=$('#keyStatus');s.textContent=msg;s.className='status '+(cls||'')}
+async function bootServer(){
+  $('#titleGrid').innerHTML='<p class="hint">작품을 불러오는 중…</p>';
+  try{ await Social.init(); LiveEngine.proxy=true; await LiveEngine.init(); setMode('live'); }
+  catch(e){ console.warn(e); LiveEngine.proxy=false; setMode('demo'); toast('서버에 연결하지 못해 데모로 보여드려요'); }
+}
+async function connect(k, silent){
+  LiveEngine.key=k.trim(); if(!LiveEngine.key) return status('키를 입력해주세요','err');
+  LiveEngine.proxy=false;
+  status('연결 확인 중…');
+  try{ await LiveEngine.init(); store.set('tmdbKey',LiveEngine.key); status('연결됐어요!','ok'); setMode('live'); if(!silent){ toast('TMDB 실시간 모드로 바꿨어요'); tab('rec'); } }
+  catch(e){ status(errMsg(e),'err'); if(MODE==='live') setMode('demo'); }
+}
+$('#connectBtn').onclick=()=>connect($('#keyIn').value);
+$('#demoBtn').onclick=async()=>{
+  store.set('tmdbKey',''); status('');
+  if(SUPABASE.url){ await bootServer(); toast('오티티픽 서버로 연결했어요'); }
+  else { setMode('demo'); toast('데모 데이터로 바꿨어요'); }
+  renderSettings();
+};
+$('#nickSave').onclick=()=>{ const v=$('#nickIn').value.trim().slice(0,20); if(!v) return toast('닉네임을 입력해주세요'); store.set('nick',v); toast('닉네임을 바꿨어요'); };
+
+renderGenres(); renderOtts(); go(0);
+const saved=store.get('tmdbKey','');
+if(saved) connect(saved, true);
+else if(SUPABASE.url) bootServer();
+else loadTitles();
+</script>
+</body>
+</html>
