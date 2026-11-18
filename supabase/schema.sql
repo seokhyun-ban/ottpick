@@ -63,6 +63,13 @@ create or replace view public.review_stats with (security_invoker = true) as
   select room, round(avg(stars)::numeric, 2) as avg_stars, count(*)::int as n
   from public.reviews group by room;
 
+-- 테이블 접근 권한 (새 테이블 자동 권한이 꺼져 있어도 동작하도록)
+grant usage on schema public to anon, authenticated;
+grant select on public.messages, public.reviews, public.review_stats to anon, authenticated;
+grant insert, delete on public.messages to authenticated;
+grant insert, update, delete on public.reviews to authenticated;
+grant select, insert, update, delete on public.user_state to authenticated;
+
 -- 채팅 실시간 전송
 do $$ begin
   alter publication supabase_realtime add table public.messages;
