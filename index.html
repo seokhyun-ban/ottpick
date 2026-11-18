@@ -686,7 +686,7 @@ const ADJ=['졸린','배부른','신난','수상한','느긋한','용감한','�
 const NOUN=['팝콘','리모컨','소파','콜라','나쵸','고양이','부엉이','감자','영사기','담요'];
 function randomNick(){ return ADJ[Math.random()*ADJ.length|0]+' '+NOUN[Math.random()*NOUN.length|0]+(Math.random()*90+10|0); }
 const Social = {
-  kind:'none', me:null, canWrite:null, isOwner:false, ready:null, sb:null, db:null, user:null,
+  kind:'none', me:null, canWrite:null, isOwner:false, ready:null, sb:null, db:null, user:null, _reload:null,
   init(){ if(!this.ready) this.ready=this._init().catch(e=>{ console.warn('social',e); this.kind='none'; }); return this.ready; },
   async _init(){
     if(SUPABASE.url){
@@ -765,8 +765,10 @@ const Social = {
       const ch=this.sb.channel('room-'+key)
         .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`room=eq.${key}`},load)
         .on('postgres_changes',{event:'DELETE',schema:'public',table:'messages'},load)
-        .subscribe();
-      return ()=>{ alive=false; this.sb.removeChannel(ch); };
+        .subscribe(st=>{ if(st==='SUBSCRIBED') load(); });   // 연결되기 전에 올라온 메시지도 놓치지 않게
+      const timer=setInterval(load, 20000);                    // 실시간 연결이 끊겨도 20초마다 새로고침
+      this._reload=load;
+      return ()=>{ alive=false; clearInterval(timer); if(this._reload===load) this._reload=null; this.sb.removeChannel(ch); };
     }
     return ()=>{};
   },
@@ -776,11 +778,11 @@ const Social = {
       this.db.doc(`rooms/${key}`).set({t:w.t, y:w.y, k:w.k, last:Date.now()}).catch(()=>{});
       return;
     }
-    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').insert({room:key, uid:this.me, nickname:this.nickname(), text:m.text, spoiler:m.spoiler}); if(error) throw error; }
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').insert({room:key, uid:this.me, nickname:this.nickname(), text:m.text, spoiler:m.spoiler}); if(error) throw error; if(this._reload) this._reload(); }
   },
   async deleteMsg(key, id){
     if(this.kind==='claude') return this.db.doc(`rooms/${key}/msgs/${id}`).delete();
-    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').delete().eq('id',id); if(error) throw error; }
+    if(this.kind==='supabase'){ const {error}=await this.sb.from('messages').delete().eq('id',id); if(error) throw error; if(this._reload) this._reload(); }
   }
 };
 
