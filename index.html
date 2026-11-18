@@ -305,6 +305,38 @@
 
   .set-sec .ott{padding:12px 10px;font-size:.88em;gap:8px;white-space:nowrap}
   .set-sec .ott .dot{width:26px;height:26px}
+
+  /* ---------- 신고 · 차단 ---------- */
+  .rp-list{display:grid;gap:8px}
+  .rp-list button{background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;font-size:.92em}
+  .rp-list button.on{border-color:var(--accent2);background:rgba(255,107,90,.1);color:#ffc2b9;font-weight:700}
+  .rp-block{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.88em;color:var(--sub)}
+  .rp-block input{width:18px;height:18px;accent-color:var(--accent2)}
+  .rp-link{color:#7d7689;font-size:1em;text-decoration:underline}
+  .msg .tm button[data-rp-msg]{color:#6f6879}
+  .blk{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:.9em}
+  .blk button{color:var(--accent);font-weight:700;font-size:.85em}
+
+  /* ---------- 로그인 ---------- */
+  .auth-list{display:grid;gap:8px}
+  .auth-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:12px;padding:13px;font-weight:700;font-size:.95em;text-align:center}
+  .auth-btn svg{width:20px;height:20px;position:absolute;left:16px}
+  .auth-btn em{font-style:normal;font-size:.72em;font-weight:700;background:rgba(0,0,0,.25);border-radius:999px;padding:2px 8px;margin-left:4px}
+  .auth-btn:disabled{opacity:.45}
+  .auth-btn.kakao{background:#FEE500;color:#191600}
+  .auth-btn.google{background:#fff;color:#1f1f1f}
+  .auth-btn.apple{background:#000;color:#fff;border:1px solid #333}
+  .auth-btn.email{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+  .email-form{margin-top:12px}
+  .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:3px;margin-bottom:12px}
+  .seg button{border-radius:9px;padding:9px;font-size:.85em;color:var(--sub);text-align:center}
+  .seg button.on{background:var(--accent);color:#1a1205;font-weight:700}
+  .email-form .field{margin-bottom:10px}
+  .login-cta{display:flex;flex-direction:column;align-items:flex-start;position:relative;width:100%;background:linear-gradient(90deg,rgba(255,181,71,.16),rgba(255,107,90,.08));border:1px solid rgba(255,181,71,.4);border-radius:16px;padding:14px 40px 14px 16px;margin-bottom:16px;text-align:left}
+  .login-cta b{font-size:.95em}
+  .login-cta span{font-size:.8em;color:var(--sub);margin-top:2px}
+  .login-cta i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--accent);font-weight:900;font-size:1.3em}
+  #rvBg{z-index:22} #chatBg{z-index:24} #rpBg{z-index:26}
 </style>
 </head>
 <body>
@@ -349,6 +381,7 @@
   <!-- ===== 설정 ===== -->
   <div class="view" id="viewSet">
     <h2 style="margin-bottom:16px">설정</h2>
+    <div class="set-sec" id="accSec" style="display:none"></div>
     <div class="set-sec">
       <h3>작품 데이터 <span class="pill" id="setPill">데모</span></h3>
       <p class="hint">TMDB API 키를 넣으면 실제 작품 수십만 개, 오늘 기준 한국 OTT 편성, 공식 포스터로 추천해요.</p>
@@ -377,6 +410,11 @@
       <p class="hint">구독하지 않은 OTT의 작품은 종합 점수가 이 기준을 넘을 때만 추천해요.</p>
       <div class="thr-row"><span>기준 점수</span><b id="setThrV"></b></div>
       <input type="range" id="setThr" min="70" max="95">
+    </div>
+    <div class="set-sec" id="blockSec" style="display:none">
+      <h3>차단한 사람</h3>
+      <p class="hint">차단한 사람의 채팅과 후기는 보이지 않아요.</p>
+      <div id="blockList"></div>
     </div>
     <div class="set-sec">
       <h3>내 기록</h3>
@@ -411,6 +449,22 @@
   <textarea class="field" id="rvText" maxlength="200" placeholder="한 줄 후기를 남겨주세요 (선택)"></textarea>
   <div class="rv-opt"><button class="spb" id="rvSp">🙈 스포 포함</button><small id="rvCnt">0 / 200</small></div>
   <div class="btns" style="display:flex;gap:8px"><button class="ghost" id="rvDel" style="flex:1;border-radius:14px;padding:14px;font-weight:700;text-align:center">삭제</button><button class="primary" id="rvSave" style="flex:2;border-radius:14px;padding:14px;font-weight:900;text-align:center">저장</button></div>
+</div></div>
+
+<!-- 신고 -->
+<div class="sheet-bg" id="rpBg"><div class="sheet">
+  <button class="x-btn" data-close="rpBg">✕</button>
+  <h3 id="rpTitle">신고하기</h3>
+  <p class="hint" id="rpQuote" style="margin:6px 0 14px"></p>
+  <div class="rp-list" id="rpList">
+    <button data-reason="spoiler">🙈 스포일러인데 가리지 않았어요</button>
+    <button data-reason="abuse">🤬 욕설·비방·혐오 표현</button>
+    <button data-reason="spam">📢 광고·도배</button>
+    <button data-reason="other">🚩 기타 부적절한 내용</button>
+  </div>
+  <label class="rp-block"><input type="checkbox" id="rpBlock"> 이 사람의 글을 앞으로 보지 않기 (차단)</label>
+  <div class="btns" style="display:flex;gap:8px;margin-top:14px"><button class="ghost" data-close="rpBg" style="flex:1;border-radius:14px;padding:14px;font-weight:700;text-align:center">취소</button><button class="primary" id="rpSend" style="flex:2;border-radius:14px;padding:14px;font-weight:900;text-align:center">신고하기</button></div>
+  <p class="note">같은 글이 3명 이상에게 신고되면 자동으로 숨겨져요. 스포일러 신고는 바로 가림 처리돼요.</p>
 </div></div>
 
 <!-- 작품 채팅방 -->
@@ -682,6 +736,8 @@ const STAR_LB=['','별로였어요','그저 그랬어요','괜찮았어요','재
 
 /* ---------- 함께 쓰는 기능 (채팅·후기·MY 동기화) ----------
    claude.ai에서 열면 claude.ai 저장소를, 오티티픽 서버(Supabase)가 설정돼 있으면 Supabase를 쓴다. 둘 다 없으면 이 기기에만 저장. */
+// 로그인 방법: 제공자 설정이 끝난 것만 true. 애플은 Apple 개발자 프로그램 가입 후 연결 예정.
+const AUTH_PROVIDERS = {kakao:false, google:false, apple:false, email:true};
 const ADJ=['졸린','배부른','신난','수상한','느긋한','용감한','몰래 보는','밤새는','감동받은','웃음 많은'];
 const NOUN=['팝콘','리모컨','소파','콜라','나쵸','고양이','부엉이','감자','영사기','담요'];
 function randomNick(){ return ADJ[Math.random()*ADJ.length|0]+' '+NOUN[Math.random()*NOUN.length|0]+(Math.random()*90+10|0); }
@@ -694,7 +750,13 @@ const Social = {
       this.sb = m.createClient(SUPABASE.url, SUPABASE.key, {auth:{persistSession:true, autoRefreshToken:true}});
       let {data:{session}} = await this.sb.auth.getSession();
       if(!session){ const r = await this.sb.auth.signInAnonymously(); if(r.error) throw r.error; session = r.data.session; }
-      this.me = session.user.id; this.canWrite = true; this.kind='supabase';
+      this.me = session.user.id; this.authUser = session.user; this.canWrite = true; this.kind='supabase';
+      this.sb.auth.onAuthStateChange((evt, s)=>{
+        if(!s) return;
+        const changed = s.user.id !== this.me;
+        this.me = s.user.id; this.authUser = s.user;
+        if(changed || evt==='USER_UPDATED') onAccountChanged(changed);
+      });
       return;
     }
     const use = window.claude && typeof window.claude.use==='function' ? n=>window.claude.use(n).catch(()=>null) : null;
@@ -707,6 +769,52 @@ const Social = {
       try{ this.canWrite = await user.can('data.write'); }catch(e){}
       try{ this.isOwner = !!(await user.isOwner()); }catch(e){}
     }
+  },
+  /* 계정 */
+  isAnon(){ return !this.authUser || !!this.authUser.is_anonymous; },
+  accountLabel(){
+    const u=this.authUser; if(!u || u.is_anonymous) return null;
+    const prov=(u.app_metadata && (u.app_metadata.providers||[u.app_metadata.provider])||[]).filter(p=>p && p!=='anonymous');
+    const names={kakao:'카카오', google:'구글', apple:'애플', email:'이메일'};
+    return {provider: prov.map(p=>names[p]||p).join(' · ') || '이메일', email: u.email || (u.user_metadata && u.user_metadata.email) || ''};
+  },
+  redirectTo(){ return location.origin + location.pathname; },
+  async oauth(provider){
+    store.set('pendingProvider', provider);
+    if(this.isAnon()){
+      // 익명으로 쌓은 기록을 그대로 새 계정에 붙인다. 이미 다른 계정에 연결된 소셜 계정이면 돌아와서 일반 로그인으로 다시 시도한다.
+      const {error} = await this.sb.auth.linkIdentity({provider, options:{redirectTo:this.redirectTo()}});
+      if(!error) return;
+    }
+    const {error} = await this.sb.auth.signInWithOAuth({provider, options:{redirectTo:this.redirectTo()}});
+    if(error) throw error;
+  },
+  async emailSignUp(email, password){
+    if(this.isAnon()){
+      const {error} = await this.sb.auth.updateUser({email, password});
+      if(error) throw error;
+      const {data} = await this.sb.auth.getUser(); this.authUser = data.user;
+      return;
+    }
+    const {error} = await this.sb.auth.signUp({email, password}); if(error) throw error;
+  },
+  async emailSignIn(email, password){
+    const {error} = await this.sb.auth.signInWithPassword({email, password}); if(error) throw error;
+  },
+  async signOut(){
+    await this.sb.auth.signOut();
+    const r = await this.sb.auth.signInAnonymously(); if(r.error) throw r.error;
+    this.me = r.data.session.user.id; this.authUser = r.data.session.user;
+  },
+  /* 신고 */
+  async report(kind, room, targetId, targetUid, reason){
+    if(this.kind==='supabase'){
+      const {error} = await this.sb.from('reports').insert({kind, room, target_id:String(targetId), target_uid:targetUid||null, reason});
+      if(error && error.code!=='23505') throw error;     // 23505 = 이미 신고함
+      if(this._reload) this._reload();
+      return;
+    }
+    if(this.kind==='claude') return this.db.collection('reports').add({kind, room, targetId:String(targetId), targetUid:targetUid||null, reason, by:this.me||null, at:Date.now()});
   },
   async token(){ if(!this.sb) return null; try{ const {data}=await this.sb.auth.getSession(); return data.session && data.session.access_token; }catch(e){ return null; } },
   nickname(){ let n=store.get('nick',''); if(!n){ n=randomNick(); store.set('nick',n); } return n; },
@@ -788,7 +896,8 @@ const Social = {
 
 /* ---------- 내 기록 (MY) ----------
    이 브라우저에 저장하고, claude.ai에서 열었을 땐 내 계정 전용 공간(data/users/<나>/me)에도 저장해 기기를 바꿔도 남게 한다. */
-const ME = Object.assign({items:{}, liked:{}, history:[], reviews:{}, fb:{}}, store.get('ottpick-me',{}));
+const ME = Object.assign({items:{}, liked:{}, history:[], reviews:{}, fb:{}, blocked:{}, reported:{}}, store.get('ottpick-me',{}));
+ME.blocked=ME.blocked||{}; ME.reported=ME.reported||{};
 (function migrate(){ const old=store.get('feedback',null); if(old){ for(const k in old) if(!ME.fb[k]) ME.fb[k]={v:old[k],at:0}; store.set('feedback',null); } })();
 function compact(w){ return {key:w.key,t:w.t,y:w.y,k:w.k,cc:w.cc||'',genres:(w.genres||[]).slice(0,4),tags:(w.tags||[]).slice(0,4),posterPath:w.posterPath||null,backdropPath:w.backdropPath||null,media:w.media||null,id:w.id||null,ott:w.ott||null,ext:w.ext||null,vc:w.vc||null}; }
 function remember(w){ if(w && w.key) ME.items[w.key]=compact(w); }
@@ -802,7 +911,9 @@ function prune(){
 function mergeMe(o){
   if(!o) return;
   Object.assign(ME.items, o.items||{}, ME.items);
-  for(const part of ['liked','reviews','fb']) for(const [k,v] of Object.entries(o[part]||{})) if(!ME[part][k] || (v.at||0)>(ME[part][k].at||0)) ME[part][k]=v;
+  for(const part of ['liked','reviews','fb','blocked','reported']){ ME[part]=ME[part]||{}; } 
+  if(o.nick && (o.nickAt||0) > (ME.nickAt||0)){ ME.nick=o.nick; ME.nickAt=o.nickAt; store.set('nick',o.nick); }
+  for(const part of ['liked','reviews','fb','blocked','reported']) for(const [k,v] of Object.entries(o[part]||{})) if(!ME[part][k] || (v.at||0)>(ME[part][k].at||0)) ME[part][k]=v;
   const seen=new Set(ME.history.map(h=>h.at)); (o.history||[]).forEach(h=>{ if(!seen.has(h.at)) ME.history.push(h); });
   ME.deleted = Math.max(ME.deleted||0, o.deleted||0);
 }
@@ -1058,11 +1169,12 @@ async function openDetail(w){
   const box=$('#dtOthers'); if(!box) return;
   if(Social.kind==='none'){ box.innerHTML='<p class="hint">다른 사람들의 후기는 곧 볼 수 있어요.</p>'; return; }
   try{
-    const list=await Social.listReviews(w.key);
+    const list=(await Social.listReviews(w.key)).filter(r=>!(r.uid && ME.blocked[r.uid]) && !ME.reported[w.key+':'+r.uid]);
+    S.dtReviews=list; S.dtKey=w.key;
     if(!list.length){ box.innerHTML='<p class="hint">아직 후기가 없어요. 첫 후기를 남겨보세요!</p>'; return; }
     const avg=list.reduce((s,r)=>s+r.stars,0)/list.length;
     box.innerHTML=`<div class="avg"><b>★ ${avg.toFixed(1)}</b><span class="hint" style="margin:0">${list.length}명의 평가</span></div>`+
-      list.map(r=>`<div class="ob"><div class="who"><span>${esc(r.uid===Social.me?'나':(r.name||'익명'))} · ${starsHTML(r.stars)}</span><span>${fmtDate(r.at)}</span></div>${r.text?`<p class="${r.spoiler?'sp':''}">${r.spoiler?'🙈 ':''}${esc(r.text)}</p>`:''}</div>`).join('');
+      list.map((r,i)=>`<div class="ob"><div class="who"><span>${esc(r.uid===Social.me?'나':(r.name||'익명'))} · ${starsHTML(r.stars)}</span><span>${fmtDate(r.at)}${r.uid!==Social.me?` · <button class="rp-link" data-rp-rv="${i}">신고</button>`:''}</span></div>${r.text?`<p class="${r.spoiler?'sp':''}">${r.spoiler?'🙈 ':''}${esc(r.text)}</p>`:''}</div>`).join('');
   }catch(e){ box.innerHTML='<p class="hint">후기를 불러오지 못했어요.</p>'; }
 }
 $('#dtBody').addEventListener('click',e=>{
@@ -1088,7 +1200,9 @@ function renderMy(){
   reviews.forEach(([k,r])=>{ if(r.stars>=4){ const w=itemOf(k); [...(w.genres||[]),...(w.tags||[])].forEach(g=>{ if(g!=='애니') cnt[g]=(cnt[g]||0)+1; }); } });
   const kw=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,7).map(([g])=>g);
   const empty=(t)=>`<div class="empty-box">${t}</div>`;
-  let h=`<div class="my-h"><div class="avatar">MY</div><div><h2>내 기록</h2><p>추천받고, 담고, 남긴 모든 것</p></div></div>
+  const acc = Social.kind==='supabase' ? Social.accountLabel() : null;
+  let h=`<div class="my-h"><div class="avatar">MY</div><div><h2>${acc?esc(Social.nickname()):'내 기록'}</h2><p>${acc?`${esc(acc.provider)} 계정으로 로그인됨`:'추천받고, 담고, 남긴 모든 것'}</p></div></div>
+    ${Social.kind==='supabase' && !acc ? `<button class="login-cta" data-goto-login><b>로그인하고 기록 지키기</b><span>지금은 이 기기에만 저장돼요. 폰을 바꿔도 이어지게 할까요?</span><i>›</i></button>` : ''}
     <div class="stats"><div class="stat"><b>${recKeys.size}</b><span>추천받은 작품</span></div><div class="stat"><b>${wants.length}</b><span>볼래요</span></div><div class="stat"><b>${liked.length}</b><span>취향작</span></div><div class="stat"><b>${reviews.length}</b><span>후기</span></div></div>`;
   if(kw.length) h+=`<div class="taste"><div class="lb">내 취향 키워드</div><div class="kw">${kw.map(g=>`<span>#${esc(g)}</span>`).join('')}</div></div>`;
   h+=`<div class="sec"><div class="sec-h"><h3>👍 볼래요</h3><span>${wants.length}</span></div>${wants.length?`<div class="hs">${wants.map(k=>hItem(k)).join('')}</div>`:empty('추천 카드에서 👍 볼래요를 누르면 여기에 모여요')}</div>`;
@@ -1138,12 +1252,14 @@ async function drawMsgs(scroll){
   if(!CHAT.msgs.length){ box.innerHTML=`<div class="sys">아직 아무도 이야기하지 않았어요.<br>「${esc(CHAT.w.t)}」 첫 감상을 남겨보세요! ✍️</div>`; return; }
   const ids=[...new Set(CHAT.msgs.filter(m=>!m.name).map(m=>m.uid).filter(Boolean))].filter(id=>!(id in CHAT.names));
   if(ids.length){ const ns=await Social.names(ids); ids.forEach(id=>CHAT.names[id]=ns[id]||''); }
-  box.innerHTML = CHAT.msgs.map(m=>{
+  const visible = CHAT.msgs.filter(m=>!(m.uid && ME.blocked[m.uid]) && !ME.reported[m.id]);
+  if(!visible.length){ box.innerHTML=`<div class="sys">보이는 메시지가 없어요.<br>「${esc(CHAT.w.t)}」 첫 감상을 남겨보세요! ✍️</div>`; return; }
+  box.innerHTML = visible.map(m=>{
     const me = Social.me && m.uid===Social.me, canDel = me || Social.isOwner;
     return `<div class="msg ${me?'me':''}">${me?'':`<div class="who">${esc(m.name||CHAT.names[m.uid]||'익명')}</div>`}
       ${m.spoiler?'<div class="spl">🙈 스포일러 · 눌러서 보기</div>':''}
       <div class="bub ${m.spoiler?'sp':''}">${esc(m.text)}</div>
-      <div class="tm">${relTime(m.at||0)}${canDel?`<button data-del="${esc(m.id)}">삭제</button>`:''}</div></div>`;
+      <div class="tm">${relTime(m.at||0)}${canDel?`<button data-del="${esc(m.id)}">삭제</button>`:''}${!me?`<button data-rp-msg="${esc(m.id)}">신고</button>`:''}</div></div>`;
   }).join('');
   if(scroll && (atBottom || box._first!==CHAT.room)){ box.scrollTop=box.scrollHeight; box._first=CHAT.room; }
 }
@@ -1154,6 +1270,7 @@ function closeChat(silent){
 }
 $('#msgs').onclick=async e=>{
   const sp=e.target.closest('.bub.sp'); if(sp){ sp.classList.remove('sp'); return; }
+  const rp=e.target.closest('[data-rp-msg]'); if(rp){ const m=CHAT.msgs.find(x=>String(x.id)===rp.dataset.rpMsg); if(m) openReport({kind:'message', room:CHAT.room, id:m.id, uid:m.uid, name:m.name||CHAT.names[m.uid]||'익명', text:m.text}); return; }
   const d=e.target.closest('[data-del]'); if(!d || Social.kind==='none' || !CHAT.room) return;
   try{ await Social.deleteMsg(CHAT.room, d.dataset.del); }catch(err){ toast('삭제하지 못했어요'); }
 };
@@ -1174,6 +1291,133 @@ $('#chatForm').onsubmit=async e=>{
     else chatFoot('전송하지 못했어요. 잠시 후 다시 시도해주세요.');
   }finally{ CHAT.sending=false; if(!$('#chatIn').disabled) $('#sendBtn').disabled=false; }
 };
+
+/* ---------- 신고 · 차단 ---------- */
+const RP={t:null, reason:null};
+function openReport(t){
+  RP.t=t; RP.reason=null;
+  $('#rpTitle').textContent = t.kind==='message' ? '이 메시지를 신고할까요?' : '이 후기를 신고할까요?';
+  $('#rpQuote').textContent = `${t.name}: "${(t.text||'').slice(0,60)}${(t.text||'').length>60?'…':''}"`;
+  $$('#rpList button').forEach(b=>b.classList.remove('on'));
+  $('#rpBlock').checked=false; $('#rpSend').disabled=true; $('#rpSend').style.opacity=.4;
+  $('#rpBg').classList.add('on');
+}
+$('#rpList').onclick=e=>{ const b=e.target.closest('[data-reason]'); if(!b) return; RP.reason=b.dataset.reason; $$('#rpList button').forEach(x=>x.classList.toggle('on',x===b)); $('#rpSend').disabled=false; $('#rpSend').style.opacity=1; };
+$('#rpSend').onclick=async()=>{
+  const t=RP.t; if(!t || !RP.reason) return;
+  $('#rpSend').disabled=true;
+  try{
+    await Social.report(t.kind, t.room, t.kind==='message'?t.id:t.uid, t.uid, RP.reason);
+    if(RP.reason!=='spoiler') ME.reported[t.kind==='message'?t.id:(t.room+':'+t.uid)]={at:Date.now()};
+    if($('#rpBlock').checked && t.uid){ ME.blocked[t.uid]={at:Date.now(), name:t.name||'익명'}; }
+    persist();
+    $('#rpBg').classList.remove('on');
+    toast($('#rpBlock').checked ? '신고하고 차단했어요' : RP.reason==='spoiler' ? '스포일러로 가렸어요. 신고 고마워요' : '신고했어요. 이제 안 보여요');
+    if(CHAT.w) drawMsgs(false);
+    if($('#dtBg').classList.contains('on') && S.dtKey){ const w=itemOf(S.dtKey); if(w) openDetail(w); }
+  }catch(e){ toast('신고하지 못했어요. 잠시 후 다시 시도해주세요'); $('#rpSend').disabled=false; }
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-rp-rv]'); if(!b) return;
+  const r=(S.dtReviews||[])[+b.dataset.rpRv]; if(!r) return;
+  openReport({kind:'review', room:S.dtKey, id:r.uid, uid:r.uid, name:r.name||'익명', text:r.text||'★'+r.stars});
+});
+function renderBlocked(){
+  const ids=Object.keys(ME.blocked||{});
+  $('#blockSec').style.display = ids.length ? '' : 'none';
+  $('#blockList').innerHTML = ids.map(id=>`<div class="blk"><span>${esc(ME.blocked[id].name||'익명')}</span><button data-unblock="${esc(id)}">차단 풀기</button></div>`).join('');
+}
+$('#blockList').onclick=e=>{ const b=e.target.closest('[data-unblock]'); if(!b) return; delete ME.blocked[b.dataset.unblock]; persist(); renderBlocked(); toast('차단을 풀었어요'); };
+
+/* ---------- 계정 (로그인) ---------- */
+const AUTH_UI={mode:'signup', open:false};
+const PROVIDER_BTN = {
+  kakao:{label:'카카오로 계속하기', cls:'kakao', icon:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.5C6.8 3.5 2.6 6.8 2.6 10.9c0 2.6 1.7 4.9 4.3 6.2l-1 3.7c-.1.3.3.6.6.4l4.4-2.9c.4 0 .7.1 1.1.1 5.2 0 9.4-3.3 9.4-7.4S17.2 3.5 12 3.5z"/></svg>'},
+  google:{label:'Google로 계속하기', cls:'google', icon:'<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.4 14a6 6 0 0 1 0-3.9V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.8 9.4 6 12 6z"/></svg>'},
+  apple:{label:'Apple로 계속하기', cls:'apple', icon:'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.3 1.2 9.7.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.8zM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg>'}
+};
+function renderAccount(){
+  const sec=$('#accSec');
+  if(Social.kind!=='supabase'){ sec.style.display='none'; return; }
+  sec.style.display='';
+  const acc=Social.accountLabel();
+  if(acc){
+    sec.innerHTML=`<h3>계정 <span class="pill ok">로그인됨</span></h3>
+      <p class="hint" style="margin-bottom:12px">${esc(acc.provider)} 계정${acc.email?` · ${esc(acc.email)}`:''}<br>MY 기록, 후기, 닉네임이 계정에 저장돼서 어느 기기에서든 이어져요.</p>
+      <div class="btns"><button class="ghost" id="logoutBtn">로그아웃</button></div>`;
+    $('#logoutBtn').onclick=async()=>{
+      try{ await Social.signOut(); }catch(e){ return toast('로그아웃하지 못했어요'); }
+      for(const k of ['items','liked','reviews','fb','blocked','reported']) ME[k]={}; ME.history=[]; delete ME.nick; delete ME.nickAt;
+      store.set('ottpick-me',ME); store.set('nick',''); toast('로그아웃했어요. 이 기기의 기록은 지웠어요');
+      renderSettings(); if(S.view==='my') renderMy();
+    };
+    return;
+  }
+  const btn=p=>{ const c=PROVIDER_BTN[p], on=AUTH_PROVIDERS[p]; return `<button class="auth-btn ${c.cls}" data-oauth="${p}" ${on?'':'disabled'}>${c.icon}<span>${c.label}</span>${on?'':'<em>준비 중</em>'}</button>`; };
+  sec.innerHTML=`<h3>계정 <span class="pill">로그인 안 함</span></h3>
+    <p class="hint" style="margin-bottom:12px">지금은 이 기기에만 기록이 저장돼요. 로그인하면 지금까지의 기록을 그대로 가져가고, 폰을 바꿔도 이어져요.</p>
+    <div class="auth-list">${btn('kakao')}${btn('google')}${btn('apple')}
+      <button class="auth-btn email" id="emailToggle"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M3.5 6.5h17v11h-17z M3.5 7l8.5 6.5L20.5 7"/></svg><span>이메일로 계속하기</span></button></div>
+    <form id="emailForm" class="email-form" style="display:${AUTH_UI.open?'block':'none'}">
+      <div class="seg"><button type="button" data-am="signup" class="${AUTH_UI.mode==='signup'?'on':''}">처음이에요 (가입)</button><button type="button" data-am="signin" class="${AUTH_UI.mode==='signin'?'on':''}">계정이 있어요</button></div>
+      <input class="field" id="emIn" type="email" autocomplete="email" placeholder="이메일 주소">
+      <input class="field" id="pwIn" type="password" autocomplete="${AUTH_UI.mode==='signup'?'new-password':'current-password'}" placeholder="비밀번호 (6자 이상)">
+      <button class="primary" id="emailGo" style="width:100%;border-radius:14px;padding:14px;font-weight:900">${AUTH_UI.mode==='signup'?'가입하고 기록 이어가기':'로그인'}</button>
+      <p class="status" id="authStatus"></p>
+      <p class="note" style="margin-top:6px">지금은 비밀번호 찾기 기능이 없어요. 비밀번호를 꼭 기억해 주세요.</p>
+    </form>`;
+  sec.querySelectorAll('[data-oauth]').forEach(b=>b.onclick=async()=>{
+    try{ b.disabled=true; await Social.oauth(b.dataset.oauth); }catch(e){ b.disabled=false; toast('로그인을 시작하지 못했어요'); }
+  });
+  $('#emailToggle').onclick=()=>{ AUTH_UI.open=!AUTH_UI.open; $('#emailForm').style.display=AUTH_UI.open?'block':'none'; if(AUTH_UI.open) $('#emIn').focus(); };
+  sec.querySelectorAll('[data-am]').forEach(b=>b.onclick=()=>{ AUTH_UI.mode=b.dataset.am; AUTH_UI.open=true; renderAccount(); });
+  $('#emailForm').onsubmit=async e=>{
+    e.preventDefault();
+    const em=$('#emIn').value.trim(), pw=$('#pwIn').value, st=$('#authStatus');
+    if(!/^\S+@\S+\.\S+$/.test(em)){ st.className='status err'; st.textContent='이메일 주소를 확인해주세요'; return; }
+    if(pw.length<6){ st.className='status err'; st.textContent='비밀번호는 6자 이상이어야 해요'; return; }
+    st.className='status'; st.textContent= AUTH_UI.mode==='signup' ? '가입하는 중…' : '로그인하는 중…'; $('#emailGo').disabled=true;
+    try{
+      if(AUTH_UI.mode==='signup') await Social.emailSignUp(em,pw); else await Social.emailSignIn(em,pw);
+      AUTH_UI.open=false; toast(AUTH_UI.mode==='signup'?'가입했어요! 기록이 계정에 저장돼요':'로그인했어요'); renderSettings();
+    }catch(err){
+      const m=(err&&err.message)||'';
+      st.className='status err';
+      st.textContent = /already|registered|exists/i.test(m) ? '이미 가입된 이메일이에요. "계정이 있어요"로 로그인해주세요'
+        : /invalid login|credentials/i.test(m) ? '이메일이나 비밀번호가 맞지 않아요'
+        : /password/i.test(m) ? '비밀번호를 더 길고 복잡하게 만들어주세요'
+        : '잠시 후 다시 시도해주세요 ('+m+')';
+      $('#emailGo').disabled=false;
+    }
+  };
+}
+async function onAccountChanged(userChanged){
+  // 다른 계정으로 바뀌면: 이 기기의 기록을 그 계정 기록과 합친다
+  if(userChanged){
+    try{ const o=await Social.loadState(); if(o){ mergeMe(o); prune(); store.set('ottpick-me',ME); } }catch(e){}
+    flush();
+  }
+  if(S.view==='set') renderSettings();
+  if(S.view==='my') renderMy();
+}
+// 소셜 로그인에서 돌아왔을 때: 이미 다른 계정에 연결된 소셜 계정이면 그 계정으로 로그인한다
+(function handleOAuthReturn(){
+  const q=new URLSearchParams(location.search+'&'+location.hash.slice(1));
+  const err=q.get('error_description')||q.get('error');
+  const pending=store.get('pendingProvider','');
+  if(!err && !q.get('code') && !q.get('access_token')) return;
+  if(err){
+    history.replaceState(null,'',location.pathname);
+    if(pending && /already|linked|exists/i.test(err)){
+      Social.init().then(()=>Social.sb && Social.sb.auth.signInWithOAuth({provider:pending, options:{redirectTo:Social.redirectTo()}}));
+      return;
+    }
+    store.set('pendingProvider',''); setTimeout(()=>toast('로그인하지 못했어요. 다시 시도해주세요'),800);
+    return;
+  }
+  store.set('pendingProvider','');
+  Social.init().then(()=>setTimeout(()=>{ if(!Social.isAnon()) toast('로그인했어요! 기록이 계정에 저장돼요'); if(/code=|access_token=/.test(location.href)) history.replaceState(null,'',location.pathname); },400));
+})();
 
 /* ---------- 이동 · 탭 ---------- */
 function syncBar(busy){
@@ -1201,11 +1445,13 @@ function tab(name){
 }
 $$('.tab').forEach(t=>t.onclick=()=>tab(t.dataset.tab));
 $('#modeBadge').onclick=()=>tab('set');
+document.addEventListener('click',e=>{ if(e.target.closest('[data-goto-login]')) tab('set'); });
 $('#nextBtn').onclick=()=>{ if(S.step<3) go(S.step+1); else {S.round++;renderResult();scrollTo({top:0,behavior:'smooth'})} };
 $('#backBtn').onclick=()=>go(Math.max(0,S.step-1));
 
 /* ---------- 설정 ---------- */
 function renderSettings(){
+  renderAccount(); renderBlocked();
   $('#keyIn').value=store.get('tmdbKey','')||'';
   const p=$('#setPill'); p.textContent=MODE!=='live'?'데모':LiveEngine.proxy?'오티티픽 서버 연결됨':'내 TMDB 키로 연결됨'; p.classList.toggle('ok',MODE==='live');
   $('#demoBtn').textContent = SUPABASE.url ? '기본 연결로' : '데모로 보기';
@@ -1247,7 +1493,7 @@ $('#demoBtn').onclick=async()=>{
   else { setMode('demo'); toast('데모 데이터로 바꿨어요'); }
   renderSettings();
 };
-$('#nickSave').onclick=()=>{ const v=$('#nickIn').value.trim().slice(0,20); if(!v) return toast('닉네임을 입력해주세요'); store.set('nick',v); toast('닉네임을 바꿨어요'); };
+$('#nickSave').onclick=()=>{ const v=$('#nickIn').value.trim().slice(0,20); if(!v) return toast('닉네임을 입력해주세요'); store.set('nick',v); ME.nick=v; ME.nickAt=Date.now(); persist(); toast('닉네임을 바꿨어요'); };
 
 renderGenres(); renderOtts(); go(0);
 const saved=store.get('tmdbKey','');
